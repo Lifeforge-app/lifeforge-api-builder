@@ -34,8 +34,6 @@ function Edge({
     targetPosition,
   });
 
-  console.log(sourceNode);
-
   return (
     <BaseEdge
       path={edgePath}

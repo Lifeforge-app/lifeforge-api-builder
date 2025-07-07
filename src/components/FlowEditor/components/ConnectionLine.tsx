@@ -1,5 +1,6 @@
 import { useConnection } from "@xyflow/react";
 import NODE_CONFIG from "../constants/node_constants";
+import { useMemo } from "react";
 
 function ConnectionLine({
   fromX,
@@ -12,16 +13,21 @@ function ConnectionLine({
   toX: number;
   toY: number;
 }) {
-  const { fromNode } = useConnection();
+  const { toNode, fromHandle, fromNode } = useConnection();
+  const color = useMemo(() => {
+    return (
+      NODE_CONFIG[
+        (fromHandle?.type === "source" ? fromNode : toNode)
+          ?.type as keyof typeof NODE_CONFIG
+      ]?.color || "gray"
+    );
+  }, [fromHandle, fromNode, toNode]);
 
   return (
     <g>
       <path
         fill="none"
-        stroke={
-          NODE_CONFIG[fromNode?.type as keyof typeof NODE_CONFIG]?.color ||
-          "gray"
-        }
+        stroke={color}
         strokeWidth={1.5}
         className="animated"
         d={`M${fromX},${fromY} C ${fromX} ${toY} ${fromX} ${toY} ${toX},${toY}`}
@@ -31,10 +37,7 @@ function ConnectionLine({
         cy={toY}
         fill="#fff"
         r={3}
-        stroke={
-          NODE_CONFIG[fromNode?.type as keyof typeof NODE_CONFIG]?.color ||
-          "gray"
-        }
+        stroke={color}
         strokeWidth={1.5}
       />
     </g>

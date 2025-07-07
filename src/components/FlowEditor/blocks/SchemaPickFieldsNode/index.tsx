@@ -4,7 +4,8 @@ import NodeTextInput from "../../components/NodeTextInput";
 import type { IDataWithUpdater } from "../../typescript/node";
 import type { IPickFieldsFromSchemaNodeData } from "./types";
 
-function PickFieldsFromSchemaNode({
+// TODO change to dynamic selection of fields from schema
+function SchemaPickFieldsNode({
   data: { fields, onUpdate },
 }: {
   data: IDataWithUpdater<IPickFieldsFromSchemaNodeData>;
@@ -13,7 +14,7 @@ function PickFieldsFromSchemaNode({
     <NodeColumnWrapper>
       <NodeColumn
         label="Schema"
-        handle={{ id: "schema-input", nodeType: "schema" }}
+        handle={{ id: "schema-input", nodeType: "schema", cardinality: 1 }}
         position="left"
       />
       <NodeColumn label="Fields">
@@ -38,4 +39,4 @@ function PickFieldsFromSchemaNode({
   );
 }
 
-export default PickFieldsFromSchemaNode;
+export default SchemaPickFieldsNode;

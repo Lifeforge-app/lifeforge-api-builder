@@ -1,8 +1,9 @@
-import { Handle, Position } from "@xyflow/react";
+import { Handle, Position, useNodeConnections } from "@xyflow/react";
 import clsx from "clsx";
 import NODE_CONFIG from "../constants/node_constants";
 import { useTranslation } from "react-i18next";
 import _ from "lodash";
+import { useMemo } from "react";
 
 function NodeColumn({
   label,
@@ -16,8 +17,25 @@ function NodeColumn({
   handle?: {
     nodeType: keyof typeof NODE_CONFIG;
     id: string;
+    cardinality?: number | "many";
   };
 }) {
+  const connections = useNodeConnections();
+  const filteredConnections = useMemo(() => {
+    return connections.filter((conn) =>
+      position === "left"
+        ? conn.targetHandle === handle?.id
+        : conn.sourceHandle === handle?.id
+    );
+  }, [connections, handle, position]);
+  const isConnectable = useMemo(() => {
+    if (!handle) return true;
+    if (handle.cardinality === "many" || !handle.cardinality) {
+      return true;
+    }
+    return filteredConnections.length < handle.cardinality;
+  }, [handle, filteredConnections.length]);
+
   const { t } = useTranslation("core.apiBuilder");
 
   return (
@@ -44,6 +62,7 @@ function NodeColumn({
             "size-3! rounded-full border border-bg-200 dark:border-bg-900 top-1/2!",
             position === "left" ? "-left-3! right-auto!" : "-right-3!"
           )}
+          isConnectable={isConnectable}
           style={{ backgroundColor: NODE_CONFIG[handle.nodeType].color }}
         />
       )}

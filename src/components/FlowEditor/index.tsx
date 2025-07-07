@@ -13,10 +13,10 @@ import {
   type EdgeChange,
   useReactFlow,
   type NodeProps,
+  type Edge,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { usePersonalization } from "../../providers/PersonalizationProvider";
 import { Button, useModalStore } from "@lifeforge/ui";
 import NodeSelector from "./components/NodeSelector";
 import NODE_CONFIG from "./constants/node_constants";
@@ -24,7 +24,8 @@ import { default as NodeComponent } from "./components/Node";
 import { toast } from "react-toastify";
 import { v4 as uuidv4 } from "uuid";
 import ConnectionLine from "./components/ConnectionLine";
-import Edge from "./components/Edge";
+import { default as EdgeComponent } from "./components/Edge";
+import usePersonalization from "../../providers/PersonalizationProvider/usePersonalization";
 
 const NODE_TYPES = Object.keys(NODE_CONFIG).reduce((acc, key) => {
   const Component = NODE_CONFIG[key as keyof typeof NODE_CONFIG].component;
@@ -67,6 +68,34 @@ const isValidConnection = (connection: Connection | Edge) => {
     return connection.sourceHandle === "controller-output";
   }
 
+  if (connection.targetHandle.includes("database-operation-input")) {
+    return connection.sourceHandle === "database-operation-output";
+  }
+
+  if (connection.targetHandle.includes("action-input")) {
+    return connection.sourceHandle === "action-output";
+  }
+
+  if (connection.targetHandle.includes("collection-input")) {
+    return connection.sourceHandle === "collection-output";
+  }
+
+  if (connection.targetHandle.includes("filter-input")) {
+    return connection.sourceHandle === "filter-output";
+  }
+
+  if (connection.targetHandle.includes("sorter-input")) {
+    return connection.sourceHandle === "sorter-output";
+  }
+
+  if (connection.targetHandle.includes("collection-pick-fields-input")) {
+    return connection.sourceHandle === "collection-pick-fields-output";
+  }
+
+  if (connection.targetHandle.includes("value-input")) {
+    return connection.sourceHandle === "value-output";
+  }
+
   return false;
 };
 
@@ -106,7 +135,6 @@ function FlowEditor() {
         ? {
             ...NODE_CONFIG[type].data,
             onUpdate: (updatedData: any) => {
-              console.log(updatedData);
               setNodes((nds) =>
                 nds.map((node) =>
                   node.id === newNode.id
@@ -222,7 +250,7 @@ function FlowEditor() {
         onConnect={onConnect}
         nodeTypes={NODE_TYPES}
         edgeTypes={{
-          default: Edge,
+          default: EdgeComponent,
         }}
         connectionLineComponent={ConnectionLine}
         isValidConnection={isValidConnection}

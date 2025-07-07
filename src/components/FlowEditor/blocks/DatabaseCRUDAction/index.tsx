@@ -1,25 +1,24 @@
 import NodeColumn from "../../components/NodeColumn";
 import NodeColumnWrapper from "../../components/NodeColumnWrapper";
 
-function ServiceNode() {
+function DatabaseCRUDAction() {
   return (
     <NodeColumnWrapper>
       <NodeColumn
-        label="Controller"
+        label="Database Action"
         handle={{
-          id: "controller-input",
-          nodeType: "controller",
+          id: "database-operation-input",
+          nodeType: "collection",
           cardinality: 1,
         }}
-        position="left"
       />
       <NodeColumn
         label="Action"
-        handle={{ id: "action-input", nodeType: "service", cardinality: 1 }}
-        position="left"
+        handle={{ id: "action-output", nodeType: "service" }}
+        position="right"
       />
     </NodeColumnWrapper>
   );
 }
 
-export default ServiceNode;
+export default DatabaseCRUDAction;

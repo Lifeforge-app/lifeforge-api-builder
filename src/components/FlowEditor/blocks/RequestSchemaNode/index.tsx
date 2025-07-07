@@ -1,7 +1,7 @@
 import NodeColumnWrapper from "../../components/NodeColumnWrapper";
 import NodeColumn from "../../components/NodeColumn";
 
-function RequestSchema() {
+function RequestSchemaNode() {
   return (
     <NodeColumnWrapper>
       {["Params", "Query", "Body"].map((type) => (
@@ -11,6 +11,7 @@ function RequestSchema() {
           handle={{
             id: `${type.toLowerCase()}-schema-input`,
             nodeType: "schema",
+            cardinality: 1,
           }}
         />
       ))}
@@ -23,4 +24,4 @@ function RequestSchema() {
   );
 }
 
-export default RequestSchema;
+export default RequestSchemaNode;

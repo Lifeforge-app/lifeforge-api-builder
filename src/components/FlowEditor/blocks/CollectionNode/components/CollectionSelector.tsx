@@ -1,5 +1,7 @@
 import { ModalHeader, QueryWrapper } from "@lifeforge/ui";
 import useAPIQuery from "../../../../../hooks/useAPIQuery";
+import { Icon } from "@iconify/react/dist/iconify.js";
+import type { ICollectionNodeData } from "../types";
 
 function CollectionSelector({
   onClose,
@@ -7,18 +9,16 @@ function CollectionSelector({
 }: {
   onClose: () => void;
   data: {
-    onSelect: (collectionName: string) => void;
+    onSelect: (collection: ICollectionNodeData) => void;
   };
 }) {
-  const collectionsQuery = useAPIQuery<
-    {
-      name: string;
-      type: "base" | "view";
-    }[]
-  >("/database/collections", ["database", "collections"]);
+  const collectionsQuery = useAPIQuery<ICollectionNodeData[]>(
+    "/database/collections",
+    ["database", "collections"]
+  );
 
   return (
-    <>
+    <div className="min-w-[40vw]">
       <ModalHeader
         namespace="core.apiBuilder"
         title="Select Collection"
@@ -26,9 +26,45 @@ function CollectionSelector({
         onClose={onClose}
       />
       <QueryWrapper query={collectionsQuery}>
-        {(data) => <>{JSON.stringify(data, null, 2)}</>}
+        {(data) => (
+          <div className="space-y-2">
+            {data
+              .sort((a, b) => {
+                if (a.type === "base" && b.type === "view") return -1;
+                if (a.type === "view" && b.type === "base") return 1;
+                return a.name.localeCompare(b.name);
+              })
+              .map((collection) => (
+                <div
+                  key={collection.name}
+                  className="p-3 rounded flex-between component-bg-with-hover hover:text-bg-900 dark:hover:text-bg-100 cursor-pointer"
+                  onClick={() => {
+                    onSelect(collection);
+                    onClose();
+                  }}
+                >
+                  <div className="flex items-center gap-2">
+                    <Icon
+                      icon={
+                        collection.type === "base"
+                          ? "tabler:folder"
+                          : "tabler:columns-3"
+                      }
+                      className="size-5 text-bg-500"
+                    />
+                    <span className="text-bg-600 dark:text-bg-400">
+                      {collection.name}
+                    </span>
+                  </div>
+                  <span className="text-bg-500">
+                    {collection.fields.length} fields
+                  </span>
+                </div>
+              ))}
+          </div>
+        )}
       </QueryWrapper>
-    </>
+    </div>
   );
 }
 

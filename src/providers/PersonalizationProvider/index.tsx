@@ -1,6 +1,6 @@
 import { LoadingScreen } from "@lifeforge/ui";
 import _ from "lodash";
-import { createContext, useContext, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
 import { BG_THEME } from "./constants/bg_theme";
 import THEME_COLOR_HEX from "./constants/theme_color_hex";
@@ -10,12 +10,8 @@ import useFontFamily from "./hooks/useFontFamilyEffect";
 import useLanguageEffect from "./hooks/useLanguageEffect";
 import useRawThemeColorEffect from "./hooks/useRawThemeColorEffect";
 import useThemeEffect from "./hooks/useThemeEffect";
-import type { IPersonalizationData } from "./interfaces/personalization_provider_interfaces";
 import { getColorPalette } from "./utils/themeColors";
-
-const PersonalizationContext = createContext<IPersonalizationData | undefined>(
-  undefined
-);
+import { PersonalizationContext } from "./usePersonalization";
 
 export default function PersonalizationProvider({
   children,
@@ -91,7 +87,7 @@ export default function PersonalizationProvider({
   );
 
   return (
-    <PersonalizationContext.Provider value={value}>
+    <PersonalizationContext value={value}>
       {!languageLoaded ? (
         <LoadingScreen />
       ) : (
@@ -112,16 +108,6 @@ export default function PersonalizationProvider({
           {children}
         </>
       )}
-    </PersonalizationContext.Provider>
+    </PersonalizationContext>
   );
-}
-
-export function usePersonalization(): IPersonalizationData {
-  const context = useContext(PersonalizationContext);
-  if (context === undefined) {
-    throw new Error(
-      "usePersonalizationContext must be used within a PersonalizationProvider"
-    );
-  }
-  return context;
 }

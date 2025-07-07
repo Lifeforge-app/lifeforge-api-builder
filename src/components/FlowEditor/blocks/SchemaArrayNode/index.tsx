@@ -6,7 +6,7 @@ function SchemaArrayNode() {
     <NodeColumnWrapper>
       <NodeColumn
         label="Schema"
-        handle={{ id: "schema-input", nodeType: "schema" }}
+        handle={{ id: "schema-input", nodeType: "schema", cardinality: 1 }}
         position="left"
       />
       <NodeColumn

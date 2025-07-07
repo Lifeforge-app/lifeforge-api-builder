@@ -13,7 +13,7 @@ function RouterNode({
     <NodeColumnWrapper>
       <NodeColumn
         label="Router"
-        handle={{ id: "router-input", nodeType: "router" }}
+        handle={{ id: "router-input", nodeType: "router", cardinality: 1 }}
       />
       <NodeColumn label="Router Path">
         <NodeTextInput
