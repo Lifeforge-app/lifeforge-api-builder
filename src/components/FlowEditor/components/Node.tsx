@@ -4,7 +4,6 @@ import React from "react";
 import NODE_CONFIG from "../constants/node_constants";
 import { useTranslation } from "react-i18next";
 import _ from "lodash";
-import tinycolor from "tinycolor2";
 import { oklchToHex } from "../../../utils/colors";
 
 function Node({

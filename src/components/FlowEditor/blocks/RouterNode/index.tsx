@@ -1,14 +1,13 @@
+import { useNodeData, useUpdateNodeData } from "../..";
 import NodeColumn from "../../components/NodeColumn";
 import NodeColumnWrapper from "../../components/NodeColumnWrapper";
 import NodeTextInput from "../../components/NodeTextInput";
-import type { IDataWithUpdater } from "../../typescript/node";
 import type { IRouterNodeData } from "./types";
 
-function RouterNode({
-  data: { path, onUpdate },
-}: {
-  data: IDataWithUpdater<IRouterNodeData>;
-}) {
+function RouterNode({ id }: { id: string }) {
+  const { path } = useNodeData<IRouterNodeData>(id);
+  const updateNode = useUpdateNodeData();
+
   return (
     <NodeColumnWrapper>
       <NodeColumn
@@ -19,7 +18,7 @@ function RouterNode({
         <NodeTextInput
           value={path}
           setValue={(newValue: string) => {
-            onUpdate({ path: newValue });
+            updateNode(id, { path: newValue });
           }}
           placeholder="/route/path"
         />

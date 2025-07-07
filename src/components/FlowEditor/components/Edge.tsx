@@ -1,7 +1,6 @@
 import {
   BaseEdge,
   getBezierPath,
-  useConnection,
   useNodes,
   type EdgeProps,
 } from "@xyflow/react";
@@ -9,7 +8,6 @@ import { useMemo } from "react";
 import NODE_CONFIG from "../constants/node_constants";
 
 function Edge({
-  id,
   source,
   sourceX,
   sourceY,
@@ -17,7 +15,6 @@ function Edge({
   targetY,
   sourcePosition,
   targetPosition,
-  style = {},
   markerEnd,
 }: EdgeProps) {
   const nodes = useNodes();

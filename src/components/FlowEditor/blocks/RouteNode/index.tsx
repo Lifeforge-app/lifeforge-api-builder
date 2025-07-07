@@ -2,16 +2,15 @@ import METHOD_COLORS from "./constants/method_colors";
 import NodeColumn from "../../components/NodeColumn";
 import NodeColumnWrapper from "../../components/NodeColumnWrapper";
 import NodeTextInput from "../../components/NodeTextInput";
-import type { IDataWithUpdater } from "../../typescript/node";
 import type { IRouteNodeData } from "./types";
 import NodeListbox from "../../components/NodeListbox";
 import NodeListboxOption from "../../components/NodeListboxOption";
+import { useNodeData, useUpdateNodeData } from "../..";
 
-function RouteNode({
-  data: { method, path, onUpdate },
-}: {
-  data: IDataWithUpdater<IRouteNodeData>;
-}) {
+function RouteNode({ id }: { id: string }) {
+  const { method, path } = useNodeData<IRouteNodeData>(id);
+  const updateNode = useUpdateNodeData();
+
   return (
     <NodeColumnWrapper>
       <NodeColumn
@@ -25,7 +24,9 @@ function RouteNode({
       <NodeColumn label="HTTP Method">
         <NodeListbox
           value={method}
-          setValue={(value) => onUpdate({ method: value as typeof method })}
+          setValue={(value) =>
+            updateNode(id, { method: value as typeof method })
+          }
           buttonContent={
             <span className="flex items-center gap-2 font-medium text-bg-500">
               <span
@@ -55,7 +56,7 @@ function RouteNode({
         <NodeTextInput
           value={path}
           setValue={(newValue) => {
-            onUpdate({ path: newValue });
+            updateNode(id, { path: newValue });
           }}
           placeholder="/route/path/:params"
         />

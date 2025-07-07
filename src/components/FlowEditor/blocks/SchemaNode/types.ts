@@ -1,4 +1,4 @@
-export interface SchemaField {
+export interface ISchemaField {
   name: string;
   type: "string" | "number" | "boolean" | "date" | "array" | "enum";
   isOptional?: boolean;
@@ -7,7 +7,7 @@ export interface SchemaField {
 
 export interface ISchemaNodeData {
   name: string;
-  fields: SchemaField[];
+  fields: ISchemaField[];
 }
 
 export interface ISchemaNodeNode {

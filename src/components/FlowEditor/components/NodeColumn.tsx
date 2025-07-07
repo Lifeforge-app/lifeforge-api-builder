@@ -1,4 +1,4 @@
-import { Handle, Position, useNodeConnections } from "@xyflow/react";
+import { Handle, Position, useNodeConnections, useNodeId } from "@xyflow/react";
 import clsx from "clsx";
 import NODE_CONFIG from "../constants/node_constants";
 import { useTranslation } from "react-i18next";
@@ -20,14 +20,17 @@ function NodeColumn({
     cardinality?: number | "many";
   };
 }) {
+  const nodeId = useNodeId();
   const connections = useNodeConnections();
   const filteredConnections = useMemo(() => {
     return connections.filter((conn) =>
       position === "left"
-        ? conn.targetHandle === handle?.id
-        : conn.sourceHandle === handle?.id
+        ? conn.targetHandle === handle?.id && conn.target === nodeId
+        : conn.sourceHandle === handle?.id && conn.source === nodeId
     );
-  }, [connections, handle, position]);
+  }, [connections, handle, position, nodeId]);
+
+  console.log(label, position, filteredConnections);
   const isConnectable = useMemo(() => {
     if (!handle) return true;
     if (handle.cardinality === "many" || !handle.cardinality) {

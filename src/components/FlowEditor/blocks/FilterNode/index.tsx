@@ -1,20 +1,14 @@
-import {
-  getIncomers,
-  getOutgoers,
-  useEdges,
-  useNodeConnections,
-  useNodes,
-} from "@xyflow/react";
+import { useEdges, useNodeConnections, useNodes } from "@xyflow/react";
 import NodeColumn from "../../components/NodeColumn";
 import NodeColumnWrapper from "../../components/NodeColumnWrapper";
 import { useEffect, useMemo } from "react";
-import type { IDataWithUpdater } from "../../typescript/node";
 import type { IFilterNodeData } from "./types";
 import { useTranslation } from "react-i18next";
 import NodeListbox from "../../components/NodeListbox";
 import type { ICollectionNodeData } from "../CollectionNode/types";
 import NodeListboxOption from "../../components/NodeListboxOption";
 import { traverseGraph } from "../../../../utils/traverseGraph";
+import { useNodeData, useUpdateNodeData } from "../..";
 
 const OPERATIONS = [
   { value: "=", label: "Equals" },
@@ -27,18 +21,19 @@ const OPERATIONS = [
   { value: "!~", label: "Does Not Contain" },
 ];
 
-function FilterNode({
-  data: { columnName, comparator, onUpdate },
-}: {
-  data: IDataWithUpdater<IFilterNodeData>;
-}) {
+function FilterNode({ id }: { id: string }) {
   const { t } = useTranslation("core.apiBuilder");
+  const { columnName, comparator } = useNodeData<IFilterNodeData>(id);
+  const updateNode = useUpdateNodeData();
   const allNodes = useNodes();
   const allEdges = useEdges();
   const connections = useNodeConnections();
   const outputConnections = useMemo(
-    () => connections.filter((conn) => conn.sourceHandle === "filter-output"),
-    [connections]
+    () =>
+      connections.filter(
+        (conn) => conn.sourceHandle === "filter-output" && conn.source === id
+      ),
+    [connections, id]
   );
 
   const targetCollection = useMemo(() => {
@@ -72,10 +67,10 @@ function FilterNode({
 
   useEffect(() => {
     if (!targetCollection) {
-      onUpdate({ columnName: "", comparator: "" });
+      updateNode(id, { columnName: "", comparator: "" });
       return;
     }
-  }, [targetCollection, onUpdate]);
+  }, [targetCollection, id, updateNode]);
 
   return (
     <NodeColumnWrapper>
@@ -84,7 +79,7 @@ function FilterNode({
           <NodeColumn label="Field">
             <NodeListbox
               value={columnName}
-              setValue={(value) => onUpdate({ columnName: value })}
+              setValue={(value) => updateNode(id, { columnName: value })}
             >
               {selectableColumns.map((field) => (
                 <NodeListboxOption key={field.name} value={field.name}>
@@ -96,7 +91,7 @@ function FilterNode({
           <NodeColumn label="Comparator">
             <NodeListbox
               value={comparator}
-              setValue={(value) => onUpdate({ comparator: value })}
+              setValue={(value) => updateNode(id, { comparator: value })}
               buttonContent={
                 <>
                   {OPERATIONS.find((op) => op.value === comparator)?.label} (

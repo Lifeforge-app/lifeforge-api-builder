@@ -10,7 +10,7 @@ import { Icon } from "@iconify/react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import FIELD_TYPES from "../constants/field_types";
-import type { ISchemaNodeData, SchemaField } from "../types";
+import type { ISchemaNodeData, ISchemaField } from "../types";
 
 interface Props {
   onClose: () => void;
@@ -30,7 +30,7 @@ export default function EditSchemaNodeModal({
     fields: schema.fields,
   });
 
-  const changeField = (idx: number, key: keyof SchemaField, val: any) =>
+  const changeField = (idx: number, key: keyof ISchemaField, val: any) =>
     setDraft((prev) => {
       const fields = [...prev.fields];
       fields[idx] = { ...fields[idx], [key]: val };

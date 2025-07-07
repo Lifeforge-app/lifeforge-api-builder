@@ -14,9 +14,17 @@ import {
   useReactFlow,
   type NodeProps,
   type Edge,
+  getOutgoers,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { Button, useModalStore } from "@lifeforge/ui";
 import NodeSelector from "./components/NodeSelector";
 import NODE_CONFIG from "./constants/node_constants";
@@ -39,7 +47,11 @@ const NODE_TYPES = Object.keys(NODE_CONFIG).reduce((acc, key) => {
   return acc;
 }, {} as Record<string, React.ComponentType<any>>);
 
-const isValidConnection = (connection: Connection | Edge) => {
+const isValidConnection = (
+  connection: Connection | Edge,
+  nodes: Node[],
+  edges: Edge[]
+) => {
   if (!connection.sourceHandle || !connection.targetHandle) {
     return false;
   }
@@ -48,12 +60,45 @@ const isValidConnection = (connection: Connection | Edge) => {
     return false;
   }
 
+  const target = nodes.find((node) => node.id === connection.target);
+  const hasCycle = (node: Node, visited = new Set<string>()) => {
+    if (visited.has(node.id)) return false;
+
+    visited.add(node.id);
+
+    for (const outgoer of getOutgoers(node, nodes, edges)) {
+      if (outgoer.id === connection.source) return true;
+      if (hasCycle(outgoer, visited)) return true;
+    }
+  };
+
+  if (target?.id === connection.source) return false;
+
+  if (hasCycle(target!)) return false;
+
+  const sourceNode = nodes.find((n) => n.id === connection.source);
+  const targetNode = nodes.find((n) => n.id === connection.target);
+
   if (connection.targetHandle.includes("request-schema-input")) {
     return connection.sourceHandle === "request-schema-output";
   }
 
   if (connection.targetHandle.includes("schema-input")) {
-    return connection.sourceHandle === "schema-output";
+    if (connection.sourceHandle !== "schema-output") return false;
+
+    if (sourceNode?.type === "schemaWithPB") {
+      return ["schema", "schemaPickFields"].includes(
+        targetNode?.type as string
+      );
+    }
+
+    if (targetNode?.type === "schemaWithPB") {
+      return ["schema", "schemaPickFields"].includes(
+        sourceNode?.type as string
+      );
+    }
+
+    return true;
   }
 
   if (connection.targetHandle.includes("route-input")) {
@@ -99,11 +144,20 @@ const isValidConnection = (connection: Connection | Edge) => {
   return false;
 };
 
+const NodeDataContext = createContext<{
+  getNodeData: <T extends Record<string, any>>(id: string) => T;
+  updateNodeData: (id: string, data: any) => void;
+}>({
+  getNodeData: <T extends Record<string, any>>(id: string) => ({} as T),
+  updateNodeData: () => {},
+});
+
 function FlowEditor() {
   const open = useModalStore((s) => s.open);
   const stack = useModalStore((s) => s.stack);
   const mousePosition = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
   const { derivedTheme, bgTempPalette } = usePersonalization();
+  const [nodeData, setNodeData] = useState<Record<string, any>>({});
   const [nodes, setNodes] = useState<Node[]>([]);
   const [edges, setEdges] = useState<Edge[]>([]);
   const { screenToFlowPosition, toObject } = useReactFlow();
@@ -134,21 +188,6 @@ function FlowEditor() {
       const data = NODE_CONFIG[type].data
         ? {
             ...NODE_CONFIG[type].data,
-            onUpdate: (updatedData: any) => {
-              setNodes((nds) =>
-                nds.map((node) =>
-                  node.id === newNode.id
-                    ? {
-                        ...node,
-                        data: {
-                          ...node.data,
-                          ...updatedData,
-                        },
-                      }
-                    : node
-                )
-              );
-            },
           }
         : {};
 
@@ -156,9 +195,14 @@ function FlowEditor() {
         id: uuidv4(),
         type,
         position,
-        data,
+        data: {},
       };
+
       setNodes((nds) => nds.concat(newNode));
+      setNodeData((prevData) => ({
+        ...prevData,
+        [newNode.id]: data,
+      }));
     },
     [setNodes]
   );
@@ -215,22 +259,9 @@ function FlowEditor() {
           setNodes(
             flowData.nodes.map((node: Node) => ({
               ...node,
-              data: node.data
-                ? {
-                    ...node.data,
-                    onUpdate: (updatedData: any) => {
-                      setNodes((nds) =>
-                        nds.map((n) =>
-                          n.id === node.id
-                            ? { ...n, data: { ...n.data, ...updatedData } }
-                            : n
-                        )
-                      );
-                    },
-                  }
-                : {},
             }))
           );
+          setNodeData(flowData.nodeData || {});
           setEdges(flowData.edges);
         }
       } catch (error) {
@@ -239,55 +270,80 @@ function FlowEditor() {
     }
   }, []);
 
+  const getNodeData = useCallback(
+    <T extends Record<string, any>>(id: string): T => {
+      return nodeData[id] || ({} as T);
+    },
+    [nodeData]
+  );
+
+  const updateNode = useCallback(
+    (id: string, data: any) => {
+      setNodeData((prevData) => ({
+        ...prevData,
+        [id]: {
+          ...prevData[id],
+          ...data,
+        },
+      }));
+    },
+    [setNodeData]
+  );
+
   return (
-    <div className="w-screen h-screen bg-bg-100 dark:bg-bg-950">
-      <ReactFlow
-        colorMode={derivedTheme}
-        nodes={nodes}
-        edges={edges}
-        onNodesChange={onNodesChange}
-        onEdgesChange={onEdgesChange}
-        onConnect={onConnect}
-        nodeTypes={NODE_TYPES}
-        edgeTypes={{
-          default: EdgeComponent,
-        }}
-        connectionLineComponent={ConnectionLine}
-        isValidConnection={isValidConnection}
-        fitView
-        snapToGrid
-        snapGrid={[20, 20]}
-      >
-        <Background
-          color={
-            derivedTheme === "dark" ? bgTempPalette[800] : bgTempPalette[400]
+    <NodeDataContext value={{ updateNodeData: updateNode, getNodeData }}>
+      <div className="w-screen h-screen bg-bg-100 dark:bg-bg-950">
+        <ReactFlow
+          colorMode={derivedTheme}
+          nodes={nodes}
+          edges={edges}
+          onNodesChange={onNodesChange}
+          onEdgesChange={onEdgesChange}
+          onConnect={onConnect}
+          nodeTypes={NODE_TYPES}
+          edgeTypes={{
+            default: EdgeComponent,
+          }}
+          connectionLineComponent={ConnectionLine}
+          isValidConnection={(connection: Connection | Edge) =>
+            isValidConnection(connection, nodes, edges)
           }
-          gap={20}
-          offset={20}
-          size={2}
-        />
-        <MiniMap
-          nodeStrokeColor={(node: Node) =>
-            NODE_CONFIG[node.type as keyof typeof NODE_CONFIG].color ||
-            bgTempPalette[500]
-          }
-          nodeStrokeWidth={5}
-          nodeBorderRadius={6}
-        />
-        <Controls className="bg-bg-800!" />
-      </ReactFlow>
-      <Button
-        icon="uil:save"
-        className="absolute top-4 right-4 z-10"
-        onClick={() => {
-          const json = toObject();
-          localStorage.setItem("flowData", JSON.stringify(json));
-          toast.success("Flow saved successfully!");
-        }}
-      >
-        Save Flow
-      </Button>
-    </div>
+          fitView
+          snapToGrid
+          snapGrid={[20, 20]}
+        >
+          <Background
+            color={
+              derivedTheme === "dark" ? bgTempPalette[800] : bgTempPalette[400]
+            }
+            gap={20}
+            offset={20}
+            size={2}
+          />
+          <MiniMap
+            nodeStrokeColor={(node: Node) =>
+              NODE_CONFIG[node.type as keyof typeof NODE_CONFIG].color ||
+              bgTempPalette[500]
+            }
+            nodeStrokeWidth={5}
+            nodeBorderRadius={6}
+          />
+          <Controls className="bg-bg-800!" />
+        </ReactFlow>
+        <Button
+          icon="uil:save"
+          className="absolute top-4 right-4 z-10"
+          onClick={() => {
+            const json: Record<string, any> = toObject();
+            json.nodeData = nodeData;
+            localStorage.setItem("flowData", JSON.stringify(json));
+            toast.success("Flow saved successfully!");
+          }}
+        >
+          Save Flow
+        </Button>
+      </div>
+    </NodeDataContext>
   );
 }
 
@@ -297,6 +353,30 @@ function FlowEditorWrapper() {
       <FlowEditor />
     </ReactFlowProvider>
   );
+}
+
+export function useGetNodeData() {
+  const context = useContext(NodeDataContext);
+  if (!context) {
+    throw new Error("useGetNodeData must be used within NodeDataContext");
+  }
+  return context.getNodeData;
+}
+
+export function useUpdateNodeData() {
+  const context = useContext(NodeDataContext);
+  if (!context) {
+    throw new Error("useUpdateNode must be used within UpdateNodeContext");
+  }
+  return context.updateNodeData;
+}
+
+export function useNodeData<T extends Record<string, any>>(id: string): T {
+  const context = useContext(NodeDataContext);
+  if (!context) {
+    throw new Error("useGetNodeData must be used within NodeDataContext");
+  }
+  return context.getNodeData<T>(id);
 }
 
 export default FlowEditorWrapper;

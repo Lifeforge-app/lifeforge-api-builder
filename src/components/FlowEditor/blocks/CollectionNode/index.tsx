@@ -1,16 +1,14 @@
 import { Button, useModalStore } from "@lifeforge/ui";
 import NodeColumnWrapper from "../../components/NodeColumnWrapper";
-import type { IDataWithUpdater } from "../../typescript/node";
 import type { ICollectionNodeData } from "./types";
 import CollectionSelector from "./components/CollectionSelector";
 import NodeColumn from "../../components/NodeColumn";
 import { Icon } from "@iconify/react/dist/iconify.js";
+import { useNodeData, useUpdateNodeData } from "../..";
 
-function CollectionNode({
-  data: { name, type, fields, onUpdate },
-}: {
-  data: IDataWithUpdater<ICollectionNodeData>;
-}) {
+function CollectionNode({ id }: { id: string }) {
+  const { name, type, fields } = useNodeData<ICollectionNodeData>(id);
+  const updateNode = useUpdateNodeData();
   const open = useModalStore((s) => s.open);
 
   return (
@@ -25,7 +23,7 @@ function CollectionNode({
                   type: "base" | "view";
                   fields: { name: string; type: string }[];
                 }) => {
-                  onUpdate(selectedCollection);
+                  updateNode(id, selectedCollection);
                 },
               });
             }}

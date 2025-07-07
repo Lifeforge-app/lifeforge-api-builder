@@ -1,4 +1,3 @@
-import type { IDataWithUpdater } from "../../typescript/node";
 import type { IValueNodeData } from "./types";
 import NodeColumnWrapper from "../../components/NodeColumnWrapper";
 import NodeColumn from "../../components/NodeColumn";
@@ -6,6 +5,7 @@ import NodeListbox from "../../components/NodeListbox";
 import NodeListboxOption from "../../components/NodeListboxOption";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import NodeTextInput from "../../components/NodeTextInput";
+import { useNodeData, useUpdateNodeData } from "../..";
 
 const DATA_TYPES = [
   {
@@ -26,18 +26,17 @@ const DATA_TYPES = [
   },
 ];
 
-function ValueNode({
-  data: { value, dataType, onUpdate },
-}: {
-  data: IDataWithUpdater<IValueNodeData>;
-}) {
+function ValueNode({ id }: { id: string }) {
+  const { dataType, value } = useNodeData<IValueNodeData>(id);
+  const updateNode = useUpdateNodeData();
+
   return (
     <NodeColumnWrapper>
       <NodeColumn label="Data Type">
         <NodeListbox
           value={dataType}
           setValue={(newValue) =>
-            onUpdate({ dataType: newValue as IValueNodeData["dataType"] })
+            updateNode(id, { dataType: newValue as IValueNodeData["dataType"] })
           }
           buttonContent={
             <span className="flex items-center gap-2 font-medium text-bg-500">
@@ -69,7 +68,7 @@ function ValueNode({
         }
         <NodeTextInput
           value={value}
-          setValue={(newValue) => onUpdate({ value: newValue })}
+          setValue={(newValue) => updateNode(id, { value: newValue })}
           placeholder={
             dataType === "string"
               ? "Enter a string value"

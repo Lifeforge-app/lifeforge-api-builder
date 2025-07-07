@@ -32,7 +32,7 @@ const NODE_CONFIG: {
   getFullList: INodeConfig<undefined>;
   value: INodeConfig<IValueNodeData>;
   schema: INodeConfig<ISchemaNodeData>;
-  schemaWithPB: INodeConfig<undefined>;
+  schemaWithPB: INodeConfig<ISchemaNodeData>;
   schemaArray: INodeConfig<undefined>;
   requestSchema: INodeConfig<undefined>;
   schemaPickFields: INodeConfig<IPickFieldsFromSchemaNodeData>;
@@ -106,6 +106,10 @@ const NODE_CONFIG: {
     icon: "simple-icons:pocketbase",
     component: WithPBNode,
     color: colors.blue[500],
+    data: {
+      name: "SchemaWithPB",
+      fields: [],
+    } as ISchemaNodeData,
   },
   requestSchema: {
     name: "Request Schema",
