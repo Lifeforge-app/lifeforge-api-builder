@@ -1,18 +1,20 @@
-import { Button, useModalStore } from "@lifeforge/ui";
-import NodeColumnWrapper from "../../components/NodeColumnWrapper";
-import type { ICollectionNodeData } from "./types";
-import CollectionSelector from "./components/CollectionSelector";
-import NodeColumn from "../../components/NodeColumn";
-import { Icon } from "@iconify/react/dist/iconify.js";
+import { Icon } from '@iconify/react/dist/iconify.js'
+
+import { Button, useModalStore } from '@lifeforge/ui'
+
+import NodeColumn from '../../components/Node/NodeColumn'
+import NodeColumnWrapper from '../../components/Node/NodeColumnWrapper'
 import {
   useNodeData,
-  useUpdateNodeData,
-} from "../../providers/NodeDataProviders";
+  useUpdateNodeData
+} from '../../providers/NodeDataProviders'
+import CollectionSelector from './components/CollectionSelector'
+import type { ICollectionNodeData } from './types'
 
 function CollectionNode({ id }: { id: string }) {
-  const { name, type, fields } = useNodeData<ICollectionNodeData>(id);
-  const updateNode = useUpdateNodeData();
-  const open = useModalStore((s) => s.open);
+  const { name, type, fields } = useNodeData<ICollectionNodeData>(id)
+  const updateNode = useUpdateNodeData()
+  const open = useModalStore(s => s.open)
 
   return (
     <NodeColumnWrapper>
@@ -22,25 +24,25 @@ function CollectionNode({ id }: { id: string }) {
             onClick={() => {
               open(CollectionSelector, {
                 onSelect: (selectedCollection: {
-                  name: string;
-                  type: "base" | "view";
-                  fields: { name: string; type: string }[];
+                  name: string
+                  type: 'base' | 'view'
+                  fields: { name: string; type: string }[]
                 }) => {
-                  updateNode(id, selectedCollection);
-                },
-              });
+                  updateNode(id, selectedCollection)
+                }
+              })
             }}
             icon="tabler:folder"
-            className="p-2! w-full"
+            className="w-full p-2!"
             variant="secondary"
           >
             Select
           </Button>
         ) : (
-          <div className="border border border-bg-200 dark:border-bg-800 component-bg-lighter gap-2 rounded-md h-10 flex items-center px-3 w-full">
+          <div className="border-bg-200 dark:border-bg-800 component-bg-lighter flex h-10 w-full items-center gap-2 rounded-md border px-3">
             <Icon
-              icon={type === "base" ? "tabler:folder" : "tabler:columns-3"}
-              className="size-5 text-bg-500"
+              icon={type === 'base' ? 'tabler:folder' : 'tabler:columns-3'}
+              className="text-bg-500 size-5"
             />
             <span className="truncate">{name}</span>
           </div>
@@ -52,7 +54,7 @@ function CollectionNode({ id }: { id: string }) {
             {fields.map((field, index) => (
               <div
                 key={index}
-                className="flex justify-between items-center p-2 gap-3 rounded border border-bg-200 dark:border-bg-800 component-bg-lighter"
+                className="border-bg-200 dark:border-bg-800 component-bg-lighter flex items-center justify-between gap-3 rounded border p-2"
               >
                 <span className="text-bg-600 dark:text-bg-400 truncate">
                   {field.name}
@@ -65,7 +67,7 @@ function CollectionNode({ id }: { id: string }) {
       )}
       <NodeColumn nodeType="collection" handle="collection-output" />
     </NodeColumnWrapper>
-  );
+  )
 }
 
-export default CollectionNode;
+export default CollectionNode

@@ -29,6 +29,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.29.0",
+    "@trivago/prettier-plugin-sort-imports": "^5.2.2",
     "@types/javascript-color-gradient": "^2.4.2",
     "@types/lodash": "^4.17.20",
     "@types/react": "^19.1.8",
@@ -39,6 +40,7 @@
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.20",
     "globals": "^16.2.0",
+    "prettier-plugin-tailwindcss": "^0.6.13",
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.34.1",
     "vite": "^7.0.0"

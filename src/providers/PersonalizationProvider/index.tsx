@@ -1,68 +1,69 @@
-import { LoadingScreen } from "@lifeforge/ui";
-import _ from "lodash";
-import { useMemo, useState } from "react";
+import _ from 'lodash'
+import { useMemo, useState } from 'react'
 
-import { BG_THEME } from "./constants/bg_theme";
-import THEME_COLOR_HEX from "./constants/theme_color_hex";
-import useBgTempEffect from "./hooks/useBgTempEffect";
-import useFaviconEffect from "./hooks/useFaviconEffect";
-import useFontFamily from "./hooks/useFontFamilyEffect";
-import useLanguageEffect from "./hooks/useLanguageEffect";
-import useRawThemeColorEffect from "./hooks/useRawThemeColorEffect";
-import useThemeEffect from "./hooks/useThemeEffect";
-import { getColorPalette } from "./utils/themeColors";
-import { PersonalizationContext } from "./usePersonalization";
+import { LoadingScreen } from '@lifeforge/ui'
+
+import { BG_THEME } from './constants/bg_theme'
+import THEME_COLOR_HEX from './constants/theme_color_hex'
+import useBgTempEffect from './hooks/useBgTempEffect'
+import useFaviconEffect from './hooks/useFaviconEffect'
+import useFontFamily from './hooks/useFontFamilyEffect'
+import useLanguageEffect from './hooks/useLanguageEffect'
+import useRawThemeColorEffect from './hooks/useRawThemeColorEffect'
+import useThemeEffect from './hooks/useThemeEffect'
+import { PersonalizationContext } from './usePersonalization'
+import { getColorPalette } from './utils/themeColors'
 
 export default function PersonalizationProvider({
   children,
   isAuthed,
-  config: { fontFamily, theme, rawThemeColor, bgTemp, language },
+  config: { fontFamily, theme, rawThemeColor, bgTemp, language }
 }: {
-  children: React.ReactNode;
-  isAuthed: boolean;
+  children: React.ReactNode
+  isAuthed: boolean
   config: {
-    fontFamily: string;
-    theme: "light" | "dark" | "system";
-    rawThemeColor: string;
-    bgTemp: string;
-    language: string;
-  };
+    fontFamily: string
+    theme: 'light' | 'dark' | 'system'
+    rawThemeColor: string
+    bgTemp: string
+    language: string
+  }
 }) {
-  const [languageLoaded, setLanguageLoaded] = useState(false);
+  const [languageLoaded, setLanguageLoaded] = useState(false)
 
   const derivedTheme = useMemo(() => {
-    if (theme === "system") {
-      return window.matchMedia("(prefers-color-scheme: dark)").matches
-        ? "dark"
-        : "light";
+    if (theme === 'system') {
+      return window.matchMedia('(prefers-color-scheme: dark)').matches
+        ? 'dark'
+        : 'light'
     }
-    return theme;
-  }, [theme]);
+    return theme
+  }, [theme])
 
   const themeColor = useMemo(
     () =>
-      !rawThemeColor.startsWith("#")
+      !rawThemeColor.startsWith('#')
         ? THEME_COLOR_HEX[
             _.camelCase(
-              rawThemeColor.replace("theme-", "").replace(/-/g, " ")
+              rawThemeColor.replace('theme-', '').replace(/-/g, ' ')
             ) as keyof typeof THEME_COLOR_HEX
           ]
         : rawThemeColor,
     [rawThemeColor]
-  );
+  )
 
   const bgTempPalette = useMemo(() => {
-    return !bgTemp.startsWith("#")
-      ? BG_THEME[bgTemp.replace("bg-", "") as keyof typeof BG_THEME]
-      : getColorPalette(bgTemp, "bg", derivedTheme);
-  }, [bgTemp]);
+    return !bgTemp.startsWith('#')
+      ? BG_THEME[bgTemp.replace('bg-', '') as keyof typeof BG_THEME]
+      : getColorPalette(bgTemp, 'bg', derivedTheme)
+  }, [bgTemp])
 
-  useFontFamily(fontFamily);
-  useThemeEffect(derivedTheme, rawThemeColor, bgTemp);
-  useRawThemeColorEffect(rawThemeColor, derivedTheme);
-  useBgTempEffect(bgTemp, derivedTheme);
-  useLanguageEffect(isAuthed, language, setLanguageLoaded);
-  useFaviconEffect(themeColor);
+  useFontFamily(fontFamily)
+  useThemeEffect(derivedTheme, rawThemeColor, bgTemp)
+  useRawThemeColorEffect(rawThemeColor, derivedTheme)
+  useBgTempEffect(bgTemp, derivedTheme)
+  useLanguageEffect(isAuthed, language, setLanguageLoaded)
+  useFaviconEffect(themeColor)
 
   const value = useMemo(
     () => ({
@@ -73,7 +74,7 @@ export default function PersonalizationProvider({
       derivedThemeColor: themeColor,
       bgTemp,
       bgTempPalette,
-      language,
+      language
     }),
     [
       fontFamily,
@@ -82,9 +83,9 @@ export default function PersonalizationProvider({
       themeColor,
       bgTemp,
       bgTempPalette,
-      language,
+      language
     ]
-  );
+  )
 
   return (
     <PersonalizationContext value={value}>
@@ -94,12 +95,12 @@ export default function PersonalizationProvider({
         <>
           <meta
             content={
-              rawThemeColor.startsWith("#")
+              rawThemeColor.startsWith('#')
                 ? rawThemeColor
                 : THEME_COLOR_HEX[
                     rawThemeColor.replace(
-                      "theme-",
-                      ""
+                      'theme-',
+                      ''
                     ) as keyof typeof THEME_COLOR_HEX
                   ]
             }
@@ -109,5 +110,5 @@ export default function PersonalizationProvider({
         </>
       )}
     </PersonalizationContext>
-  );
+  )
 }

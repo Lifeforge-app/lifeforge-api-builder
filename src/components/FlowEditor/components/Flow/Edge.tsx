@@ -1,11 +1,12 @@
 import {
   BaseEdge,
-  getBezierPath,
-  useNodes,
   type EdgeProps,
-} from "@xyflow/react";
-import { useMemo } from "react";
-import NODE_CONFIG, { type NODE_TYPES } from "../nodes";
+  getBezierPath,
+  useNodes
+} from '@xyflow/react'
+import { useMemo } from 'react'
+
+import NODE_CONFIG, { type NODE_TYPES } from '../../nodes'
 
 function Edge({
   source,
@@ -15,31 +16,31 @@ function Edge({
   targetY,
   sourcePosition,
   targetPosition,
-  markerEnd,
+  markerEnd
 }: EdgeProps) {
-  const nodes = useNodes();
+  const nodes = useNodes()
   const sourceNode = useMemo(
-    () => nodes.find((node) => node.id === source),
+    () => nodes.find(node => node.id === source),
     [nodes, source]
-  );
+  )
   const [edgePath] = getBezierPath({
     sourceX,
     sourceY,
     sourcePosition,
     targetX,
     targetY,
-    targetPosition,
-  });
+    targetPosition
+  })
 
   return (
     <BaseEdge
       path={edgePath}
       markerEnd={markerEnd}
       style={{
-        stroke: NODE_CONFIG[sourceNode?.type as NODE_TYPES]?.color || "gray",
+        stroke: NODE_CONFIG[sourceNode?.type as NODE_TYPES]?.color || 'gray'
       }}
     />
-  );
+  )
 }
 
-export default Edge;
+export default Edge

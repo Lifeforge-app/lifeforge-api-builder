@@ -1,13 +1,13 @@
 /* eslint-disable @tanstack/query/exhaustive-deps */
-import { type UseQueryOptions, useQuery } from "@tanstack/react-query";
+import { type UseQueryOptions, useQuery } from '@tanstack/react-query'
 
-import fetchAPI from "../utils/fetchAPI";
+import fetchAPI from '../utils/fetchAPI'
 
 function useAPIQuery<T>(
   endpoint: string,
   key: unknown[],
   enabled = true,
-  options: Omit<UseQueryOptions<T>, "queryKey" | "queryFn"> = {}
+  options: Omit<UseQueryOptions<T>, 'queryKey' | 'queryFn'> = {}
 ) {
   return useQuery<T>({
     ...options,
@@ -15,8 +15,8 @@ function useAPIQuery<T>(
     staleTime: Infinity,
     queryKey: key,
     queryFn: () => fetchAPI(endpoint),
-    enabled,
-  });
+    enabled
+  })
 }
 
-export default useAPIQuery;
+export default useAPIQuery

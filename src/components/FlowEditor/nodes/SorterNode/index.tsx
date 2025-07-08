@@ -1,5 +1,5 @@
 function SorterNode() {
-  return <div>Sorter</div>;
+  return <div>Sorter</div>
 }
 
-export default SorterNode;
+export default SorterNode

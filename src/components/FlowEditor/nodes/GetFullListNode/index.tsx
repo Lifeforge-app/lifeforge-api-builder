@@ -1,5 +1,5 @@
-import NodeColumnWrapper from "../../components/NodeColumnWrapper";
-import NodeColumn from "../../components/NodeColumn";
+import NodeColumn from '../../components/Node/NodeColumn'
+import NodeColumnWrapper from '../../components/Node/NodeColumnWrapper'
 
 function GetFullListNode() {
   return (
@@ -13,7 +13,7 @@ function GetFullListNode() {
       />
       <NodeColumn nodeType="getFullList" handle="db-operation-output" />
     </NodeColumnWrapper>
-  );
+  )
 }
 
-export default GetFullListNode;
+export default GetFullListNode

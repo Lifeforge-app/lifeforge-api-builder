@@ -1,28 +1,28 @@
 const FIELD_TYPES = [
   {
-    label: "String",
-    icon: "tabler:abc",
+    label: 'String',
+    icon: 'tabler:abc'
   },
   {
-    label: "Number",
-    icon: "tabler:number-123",
+    label: 'Number',
+    icon: 'tabler:number-123'
   },
   {
-    label: "Boolean",
-    icon: "tabler:toggle-left",
+    label: 'Boolean',
+    icon: 'tabler:toggle-left'
   },
   {
-    label: "Date",
-    icon: "tabler:calendar",
+    label: 'Date',
+    icon: 'tabler:calendar'
   },
   {
-    label: "Array",
-    icon: "tabler:list",
+    label: 'Array',
+    icon: 'tabler:list'
   },
   {
-    label: "Enum",
-    icon: "tabler:braces",
-  },
-];
+    label: 'Enum',
+    icon: 'tabler:braces'
+  }
+]
 
-export default FIELD_TYPES;
+export default FIELD_TYPES

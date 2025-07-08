@@ -1,55 +1,57 @@
+import { Icon } from '@iconify/react'
+import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
+
 import {
   Button,
   ListboxOrComboboxInput,
   ListboxOrComboboxOption,
   ModalHeader,
   Switch,
-  TextInput,
-} from "@lifeforge/ui";
-import { Icon } from "@iconify/react";
-import { useState } from "react";
-import { useTranslation } from "react-i18next";
-import FIELD_TYPES from "../constants/field_types";
-import type { ISchemaNodeData, ISchemaField } from "../types";
+  TextInput
+} from '@lifeforge/ui'
+
+import FIELD_TYPES from '../constants/field_types'
+import type { ISchemaField, ISchemaNodeData } from '../types'
 
 interface Props {
-  onClose: () => void;
+  onClose: () => void
   data: {
-    schema: ISchemaNodeData;
-    onSave: (data: Omit<ISchemaNodeData, "onUpdate">) => void;
-  };
+    schema: ISchemaNodeData
+    onSave: (data: Omit<ISchemaNodeData, 'onUpdate'>) => void
+  }
 }
 
 export default function EditSchemaNodeModal({
   onClose,
-  data: { schema, onSave },
+  data: { schema, onSave }
 }: Props) {
-  const { t } = useTranslation("core.apiBuilder");
-  const [draft, setDraft] = useState<Omit<ISchemaNodeData, "onUpdate">>({
+  const { t } = useTranslation('core.apiBuilder')
+  const [draft, setDraft] = useState<Omit<ISchemaNodeData, 'onUpdate'>>({
     name: schema.name,
-    fields: schema.fields,
-  });
+    fields: schema.fields
+  })
 
   const changeField = (idx: number, key: keyof ISchemaField, val: any) =>
-    setDraft((prev) => {
-      const fields = [...prev.fields];
-      fields[idx] = { ...fields[idx], [key]: val };
-      return { ...prev, fields };
-    });
+    setDraft(prev => {
+      const fields = [...prev.fields]
+      fields[idx] = { ...fields[idx], [key]: val }
+      return { ...prev, fields }
+    })
 
   const addField = () =>
-    setDraft((p) => ({
+    setDraft(p => ({
       ...p,
-      fields: [...p.fields, { name: "", type: "string", isOptional: false }],
-    }));
+      fields: [...p.fields, { name: '', type: 'string', isOptional: false }]
+    }))
 
   const removeField = (i: number) =>
-    setDraft((p) => ({ ...p, fields: p.fields.filter((_, idx) => idx !== i) }));
+    setDraft(p => ({ ...p, fields: p.fields.filter((_, idx) => idx !== i) }))
 
   const save = () => {
-    onSave(draft);
-    onClose();
-  };
+    onSave(draft)
+    onClose()
+  }
 
   return (
     <div className="min-w-[50vw]">
@@ -62,7 +64,7 @@ export default function EditSchemaNodeModal({
       <div>
         <TextInput
           value={draft.name}
-          setValue={(val) => setDraft((prev) => ({ ...prev, name: val }))}
+          setValue={val => setDraft(prev => ({ ...prev, name: val }))}
           placeholder="UserSchema"
           icon="tabler:braces"
           name="Schema Name"
@@ -70,18 +72,18 @@ export default function EditSchemaNodeModal({
           namespace="core.apiBuilder"
         />
       </div>
-      <div className="space-y-3 mt-4">
+      <div className="mt-4 space-y-3">
         {draft.fields.map((f, i) => (
           <div
             key={i}
-            className="border-[1.8px] border-bg-700 flex items-center gap-3 rounded-lg p-4 shadow-custom items-center"
+            className="border-bg-700 shadow-custom flex items-center gap-3 rounded-lg border-[1.8px] p-4"
           >
-            <div className="space-y-3 w-full">
+            <div className="w-full space-y-3">
               <div className="flex items-center gap-3">
                 <TextInput
                   className="flex-1"
                   value={f.name}
-                  setValue={(val) => changeField(i, "name", val)}
+                  setValue={val => changeField(i, 'name', val)}
                   placeholder="fieldName"
                   darker
                   name="Field Name"
@@ -94,26 +96,25 @@ export default function EditSchemaNodeModal({
                   value={f.type}
                   type="listbox"
                   namespace="core.apiBuilder"
-                  setValue={(val) => changeField(i, "type", val)}
+                  setValue={val => changeField(i, 'type', val)}
                   buttonContent={
                     <>
                       <Icon
                         icon={
                           FIELD_TYPES.find(
-                            (t) => t.label.toLowerCase() === f.type
-                          )?.icon || "tabler:abc"
+                            t => t.label.toLowerCase() === f.type
+                          )?.icon || 'tabler:abc'
                         }
                         className="size-5"
                       />
                       <span>
-                        {FIELD_TYPES.find(
-                          (t) => t.label.toLowerCase() === f.type
-                        )?.label || "Select Type"}
+                        {FIELD_TYPES.find(t => t.label.toLowerCase() === f.type)
+                          ?.label || 'Select Type'}
                       </span>
                     </>
                   }
                 >
-                  {FIELD_TYPES.map((type) => (
+                  {FIELD_TYPES.map(type => (
                     <ListboxOrComboboxOption
                       key={type.label}
                       value={type.label.toLowerCase()}
@@ -126,12 +127,12 @@ export default function EditSchemaNodeModal({
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Icon className="size-6" icon="tabler:arrow-left-right" />
-                  <span className="text-lg">{t("inputs.optional")}</span>
+                  <span className="text-lg">{t('inputs.optional')}</span>
                 </div>
                 <Switch
                   checked={!!f.isOptional}
                   onChange={() => {
-                    changeField(i, "isOptional", !f.isOptional);
+                    changeField(i, 'isOptional', !f.isOptional)
                   }}
                 />
               </div>
@@ -146,8 +147,8 @@ export default function EditSchemaNodeModal({
         ))}
 
         {draft.fields.length === 0 && (
-          <div className="text-center text-bg-500 mt-4">
-            {t("empty.noFields")}
+          <div className="text-bg-500 mt-4 text-center">
+            {t('empty.noFields')}
           </div>
         )}
       </div>
@@ -158,12 +159,12 @@ export default function EditSchemaNodeModal({
         className="mt-4 w-full"
         namespace="core.apiBuilder"
       >
-        {t("inputs.addField")}
+        {t('inputs.addField')}
       </Button>
 
-      <Button icon="uil:save" onClick={save} className="w-full mt-6">
+      <Button icon="uil:save" onClick={save} className="mt-6 w-full">
         Save
       </Button>
     </div>
-  );
+  )
 }

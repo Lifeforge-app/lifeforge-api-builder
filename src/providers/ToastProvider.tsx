@@ -1,8 +1,9 @@
-import { ToastContainer } from "react-toastify";
-import usePersonalization from "./PersonalizationProvider/usePersonalization";
+import { ToastContainer } from 'react-toastify'
+
+import usePersonalization from './PersonalizationProvider/usePersonalization'
 
 function ToastProvider({ children }: { children: React.ReactNode }) {
-  const { theme } = usePersonalization();
+  const { theme } = usePersonalization()
   return (
     <>
       {children}
@@ -18,7 +19,7 @@ function ToastProvider({ children }: { children: React.ReactNode }) {
         theme={theme}
       />
     </>
-  );
+  )
 }
 
-export default ToastProvider;
+export default ToastProvider

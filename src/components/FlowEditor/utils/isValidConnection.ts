@@ -1,11 +1,12 @@
 import {
-  getOutgoers,
   type Connection,
   type Edge,
   type Node,
-} from "@xyflow/react";
-import NODE_CONFIG, { type NODE_TYPES } from "../nodes";
-import type { IHandler } from "../typescript/node";
+  getOutgoers
+} from '@xyflow/react'
+
+import NODE_CONFIG, { type NODE_TYPES } from '../nodes'
+import type { IHandler } from '../typescript/node'
 
 const hasCycle = (
   start: Node,
@@ -14,15 +15,15 @@ const hasCycle = (
   edges: Edge[],
   visited = new Set<string>()
 ): boolean => {
-  if (visited.has(start.id)) return false;
-  visited.add(start.id);
+  if (visited.has(start.id)) return false
+  visited.add(start.id)
 
   for (const next of getOutgoers(start, nodes, edges)) {
-    if (next.id === sourceId) return true;
-    if (hasCycle(next, sourceId, nodes, edges, visited)) return true;
+    if (next.id === sourceId) return true
+    if (hasCycle(next, sourceId, nodes, edges, visited)) return true
   }
-  return false;
-};
+  return false
+}
 
 /**
  * Validates whether a connection between two nodes is valid based on various criteria.
@@ -50,49 +51,49 @@ export const isValidConnection = (
   nodes: Node[],
   edges: Edge[]
 ) => {
-  if (!connection.sourceHandle || !connection.targetHandle) return false;
-  if (connection.source === connection.target) return false;
+  if (!connection.sourceHandle || !connection.targetHandle) return false
+  if (connection.source === connection.target) return false
 
-  const sourceNode = nodes.find((n) => n.id === connection.source);
-  const targetNode = nodes.find((n) => n.id === connection.target);
-  if (!sourceNode || !targetNode) return false;
+  const sourceNode = nodes.find(n => n.id === connection.source)
+  const targetNode = nodes.find(n => n.id === connection.target)
+  if (!sourceNode || !targetNode) return false
 
-  if (hasCycle(targetNode, connection.source, nodes, edges)) return false;
+  if (hasCycle(targetNode, connection.source, nodes, edges)) return false
 
-  const tgtCfg = NODE_CONFIG[targetNode.type as NODE_TYPES];
-  const srcCfg = NODE_CONFIG[sourceNode.type as NODE_TYPES];
-  if (!tgtCfg || !srcCfg) return false;
+  const tgtCfg = NODE_CONFIG[targetNode.type as NODE_TYPES]
+  const srcCfg = NODE_CONFIG[sourceNode.type as NODE_TYPES]
+  if (!tgtCfg || !srcCfg) return false
 
   const tgtHandler = tgtCfg.handlers[
     connection.targetHandle as keyof typeof tgtCfg.handlers
-  ] as IHandler;
+  ] as IHandler
   const srcHandler = srcCfg.handlers[
     connection.sourceHandle as keyof typeof srcCfg.handlers
-  ] as IHandler;
-  if (!tgtHandler || !srcHandler) return false;
+  ] as IHandler
+  if (!tgtHandler || !srcHandler) return false
 
-  if (tgtHandler.cardinality && tgtHandler.cardinality !== "many") {
+  if (tgtHandler.cardinality && tgtHandler.cardinality !== 'many') {
     const existing = edges.filter(
-      (e) =>
+      e =>
         e.target === connection.target &&
         e.targetHandle === connection.targetHandle
-    ).length;
-    if (existing >= tgtHandler.cardinality) return false;
+    ).length
+    if (existing >= tgtHandler.cardinality) return false
   }
 
   if (
     tgtHandler.filter?.handler &&
     !tgtHandler.filter.handler.includes(connection.sourceHandle)
   ) {
-    return false;
+    return false
   }
 
   if (
     tgtHandler.filter?.node &&
     !tgtHandler.filter.node.includes(sourceNode.type as NODE_TYPES)
   ) {
-    return false;
+    return false
   }
 
-  return true;
-};
+  return true
+}

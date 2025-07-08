@@ -1,3 +1,3 @@
 export interface IRouterNodeData {
-  path: string;
+  path: string
 }

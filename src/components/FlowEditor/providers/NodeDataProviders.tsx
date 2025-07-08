@@ -1,36 +1,36 @@
-import { createContext, useContext } from "react";
+import { createContext, useContext } from 'react'
 
 export const NodeDataContext = createContext<{
-  getNodeData: <T extends Record<string, any>>(id: string) => T;
+  getNodeData: <T extends Record<string, any>>(id: string) => T
   updateNodeData: <T extends Record<string, any>>(
     id: string,
     data: T | ((prevData: T) => T)
-  ) => void;
+  ) => void
 }>({
-  getNodeData: <T extends Record<string, any>>() => ({} as T),
-  updateNodeData: () => {},
-});
+  getNodeData: <T extends Record<string, any>>() => ({}) as T,
+  updateNodeData: () => {}
+})
 
 export function useGetNodeData() {
-  const context = useContext(NodeDataContext);
+  const context = useContext(NodeDataContext)
   if (!context) {
-    throw new Error("useGetNodeData must be used within NodeDataContext");
+    throw new Error('useGetNodeData must be used within NodeDataContext')
   }
-  return context.getNodeData;
+  return context.getNodeData
 }
 
 export function useUpdateNodeData() {
-  const context = useContext(NodeDataContext);
+  const context = useContext(NodeDataContext)
   if (!context) {
-    throw new Error("useUpdateNode must be used within UpdateNodeContext");
+    throw new Error('useUpdateNode must be used within UpdateNodeContext')
   }
-  return context.updateNodeData;
+  return context.updateNodeData
 }
 
 export function useNodeData<T extends Record<string, any>>(id: string): T {
-  const context = useContext(NodeDataContext);
+  const context = useContext(NodeDataContext)
   if (!context) {
-    throw new Error("useGetNodeData must be used within NodeDataContext");
+    throw new Error('useGetNodeData must be used within NodeDataContext')
   }
-  return context.getNodeData<T>(id);
+  return context.getNodeData<T>(id)
 }

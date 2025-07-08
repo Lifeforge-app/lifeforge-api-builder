@@ -1,15 +1,15 @@
-import NodeColumn from "../../components/NodeColumn";
-import NodeColumnWrapper from "../../components/NodeColumnWrapper";
-import NodeTextInput from "../../components/NodeTextInput";
+import NodeColumn from '../../components/Node/NodeColumn'
+import NodeColumnWrapper from '../../components/Node/NodeColumnWrapper'
+import NodeTextInput from '../../components/NodeTextInput'
 import {
   useNodeData,
-  useUpdateNodeData,
-} from "../../providers/NodeDataProviders";
-import type { IRouterNodeData } from "./types";
+  useUpdateNodeData
+} from '../../providers/NodeDataProviders'
+import type { IRouterNodeData } from './types'
 
 function RouterNode({ id }: { id: string }) {
-  const { path } = useNodeData<IRouterNodeData>(id);
-  const updateNode = useUpdateNodeData();
+  const { path } = useNodeData<IRouterNodeData>(id)
+  const updateNode = useUpdateNodeData()
 
   return (
     <NodeColumnWrapper>
@@ -18,14 +18,14 @@ function RouterNode({ id }: { id: string }) {
         <NodeTextInput
           value={path}
           setValue={(newValue: string) => {
-            updateNode(id, { path: newValue });
+            updateNode(id, { path: newValue })
           }}
           placeholder="/route/path"
         />
       </NodeColumn>
       <NodeColumn nodeType="router" handle="router-output" />
     </NodeColumnWrapper>
-  );
+  )
 }
 
-export default RouterNode;
+export default RouterNode

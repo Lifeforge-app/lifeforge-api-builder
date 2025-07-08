@@ -1,37 +1,38 @@
-import { useEffect } from "react";
-import type { Node } from "@xyflow/react";
-import type { FlowStateActions } from "./useFlowState";
+import type { Node } from '@xyflow/react'
+import { useEffect } from 'react'
 
-const STORAGE_KEY = "flowData";
+import type { FlowStateActions } from './useFlowState'
+
+const STORAGE_KEY = 'flowData'
 
 interface UseFlowPersistenceProps {
-  setNodes: FlowStateActions["setNodes"];
-  setEdges: FlowStateActions["setEdges"];
-  setNodeData: FlowStateActions["setNodeData"];
+  setNodes: FlowStateActions['setNodes']
+  setEdges: FlowStateActions['setEdges']
+  setNodeData: FlowStateActions['setNodeData']
 }
 
 export function useFlowPersistence({
   setNodes,
   setEdges,
-  setNodeData,
+  setNodeData
 }: UseFlowPersistenceProps) {
   useEffect(() => {
-    const savedData = localStorage.getItem(STORAGE_KEY);
+    const savedData = localStorage.getItem(STORAGE_KEY)
     if (savedData) {
       try {
-        const flowData = JSON.parse(savedData);
+        const flowData = JSON.parse(savedData)
         if (flowData.nodes && flowData.edges) {
           setNodes(
             flowData.nodes.map((node: Node) => ({
-              ...node,
+              ...node
             }))
-          );
-          setNodeData(flowData.nodeData || {});
-          setEdges(flowData.edges);
+          )
+          setNodeData(flowData.nodeData || {})
+          setEdges(flowData.edges)
         }
       } catch (error) {
-        console.error("Failed to parse saved flow data:", error);
+        console.error('Failed to parse saved flow data:', error)
       }
     }
-  }, [setNodes, setEdges, setNodeData]);
+  }, [setNodes, setEdges, setNodeData])
 }

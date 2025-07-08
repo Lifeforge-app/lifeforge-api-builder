@@ -1,4 +1,4 @@
 export interface IFilterNodeData {
-  columnName: string;
-  comparator: string;
+  columnName: string
+  comparator: string
 }

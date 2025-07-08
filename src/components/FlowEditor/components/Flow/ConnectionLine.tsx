@@ -1,26 +1,27 @@
-import { useConnection } from "@xyflow/react";
-import NODE_CONFIG, { type NODE_TYPES } from "../nodes";
-import { useMemo } from "react";
+import { useConnection } from '@xyflow/react'
+import { useMemo } from 'react'
+
+import NODE_CONFIG, { type NODE_TYPES } from '../../nodes'
 
 function ConnectionLine({
   fromX,
   fromY,
   toX,
-  toY,
+  toY
 }: {
-  fromX: number;
-  fromY: number;
-  toX: number;
-  toY: number;
+  fromX: number
+  fromY: number
+  toX: number
+  toY: number
 }) {
-  const { toNode, fromHandle, fromNode } = useConnection();
+  const { toNode, fromHandle, fromNode } = useConnection()
   const color = useMemo(() => {
     return (
       NODE_CONFIG[
-        (fromHandle?.type === "source" ? fromNode : toNode)?.type as NODE_TYPES
-      ]?.color || "gray"
-    );
-  }, [fromHandle, fromNode, toNode]);
+        (fromHandle?.type === 'source' ? fromNode : toNode)?.type as NODE_TYPES
+      ]?.color || 'gray'
+    )
+  }, [fromHandle, fromNode, toNode])
 
   return (
     <g>
@@ -40,7 +41,7 @@ function ConnectionLine({
         strokeWidth={1.5}
       />
     </g>
-  );
+  )
 }
 
-export default ConnectionLine;
+export default ConnectionLine

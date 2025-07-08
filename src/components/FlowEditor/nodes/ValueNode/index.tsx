@@ -1,52 +1,53 @@
-import type { IValueNodeData } from "./types";
-import NodeColumnWrapper from "../../components/NodeColumnWrapper";
-import NodeColumn from "../../components/NodeColumn";
-import NodeListbox from "../../components/NodeListbox";
-import NodeListboxOption from "../../components/NodeListboxOption";
-import { Icon } from "@iconify/react/dist/iconify.js";
-import NodeTextInput from "../../components/NodeTextInput";
+import { Icon } from '@iconify/react/dist/iconify.js'
+
+import NodeColumn from '../../components/Node/NodeColumn'
+import NodeColumnWrapper from '../../components/Node/NodeColumnWrapper'
+import NodeListbox from '../../components/Node/NodeListbox'
+import NodeListboxOption from '../../components/Node/NodeListboxOption'
+import NodeTextInput from '../../components/NodeTextInput'
 import {
   useNodeData,
-  useUpdateNodeData,
-} from "../../providers/NodeDataProviders";
+  useUpdateNodeData
+} from '../../providers/NodeDataProviders'
+import type { IValueNodeData } from './types'
 
 const DATA_TYPES = [
   {
-    label: "String",
-    icon: "tabler:abc",
+    label: 'String',
+    icon: 'tabler:abc'
   },
   {
-    label: "Number",
-    icon: "tabler:number-123",
+    label: 'Number',
+    icon: 'tabler:number-123'
   },
   {
-    label: "Boolean",
-    icon: "tabler:toggle-left",
+    label: 'Boolean',
+    icon: 'tabler:toggle-left'
   },
   {
-    label: "Array",
-    icon: "tabler:list",
-  },
-];
+    label: 'Array',
+    icon: 'tabler:list'
+  }
+]
 
 function ValueNode({ id }: { id: string }) {
-  const { dataType, value } = useNodeData<IValueNodeData>(id);
-  const updateNode = useUpdateNodeData();
+  const { dataType, value } = useNodeData<IValueNodeData>(id)
+  const updateNode = useUpdateNodeData()
 
   return (
     <NodeColumnWrapper>
       <NodeColumn label="Data Type">
         <NodeListbox
           value={dataType}
-          setValue={(newValue) =>
-            updateNode(id, { dataType: newValue as IValueNodeData["dataType"] })
+          setValue={newValue =>
+            updateNode(id, { dataType: newValue as IValueNodeData['dataType'] })
           }
           buttonContent={
-            <span className="flex items-center gap-2 font-medium text-bg-500">
+            <span className="text-bg-500 flex items-center gap-2 font-medium">
               <Icon
                 icon={
-                  DATA_TYPES.find((t) => t.label.toLowerCase() === dataType)
-                    ?.icon || "tabler:abc"
+                  DATA_TYPES.find(t => t.label.toLowerCase() === dataType)
+                    ?.icon || 'tabler:abc'
                 }
                 className="size-4"
               />
@@ -54,7 +55,7 @@ function ValueNode({ id }: { id: string }) {
             </span>
           }
         >
-          {DATA_TYPES.map((type) => (
+          {DATA_TYPES.map(type => (
             <NodeListboxOption
               key={type.label}
               value={type.label.toLowerCase()}
@@ -71,21 +72,21 @@ function ValueNode({ id }: { id: string }) {
         }
         <NodeTextInput
           value={value}
-          setValue={(newValue) => updateNode(id, { value: newValue })}
+          setValue={newValue => updateNode(id, { value: newValue })}
           placeholder={
-            dataType === "string"
-              ? "Enter a string value"
-              : dataType === "number"
-              ? "Enter a number"
-              : dataType === "boolean"
-              ? "true or false"
-              : "Enter array values (comma separated)"
+            dataType === 'string'
+              ? 'Enter a string value'
+              : dataType === 'number'
+                ? 'Enter a number'
+                : dataType === 'boolean'
+                  ? 'true or false'
+                  : 'Enter array values (comma separated)'
           }
         />
       </NodeColumn>
       <NodeColumn nodeType="value" handle="value-output" />
     </NodeColumnWrapper>
-  );
+  )
 }
 
-export default ValueNode;
+export default ValueNode

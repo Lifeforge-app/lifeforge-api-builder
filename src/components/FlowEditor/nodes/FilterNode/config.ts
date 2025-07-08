@@ -1,33 +1,34 @@
-import colors from "tailwindcss/colors";
-import FilterNode from "./index";
-import type { IFilterNodeData } from "./types";
-import defineNodeConfig from "../../utils/defineConfig";
+import colors from 'tailwindcss/colors'
+
+import defineNodeConfig from '../../utils/defineConfig'
+import FilterNode from './index'
+import type { IFilterNodeData } from './types'
 
 export default defineNodeConfig<IFilterNodeData>()({
-  name: "Filter",
-  icon: "tabler:filter",
+  name: 'Filter',
+  icon: 'tabler:filter',
   component: FilterNode,
   color: colors.purple[500],
   data: {
-    columnName: "",
-    comparator: "",
+    columnName: '',
+    comparator: ''
   },
   handlers: {
-    "value-input": {
-      label: "Value",
-      nodeType: "value",
+    'value-input': {
+      label: 'Value',
+      nodeType: 'value',
       cardinality: 1,
       filter: {
-        handler: ["value-output"],
-      },
+        handler: ['value-output']
+      }
     },
-    "filter-output": {
-      label: "Filter",
-      nodeType: "filter",
+    'filter-output': {
+      label: 'Filter',
+      nodeType: 'filter',
       cardinality: 1,
       filter: {
-        handler: ["filter-input"],
-      },
-    },
-  },
-} as const);
+        handler: ['filter-input']
+      }
+    }
+  }
+} as const)

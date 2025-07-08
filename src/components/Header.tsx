@@ -1,9 +1,10 @@
-import { Icon } from "@iconify/react/dist/iconify.js";
-import { Button } from "@lifeforge/ui";
-import { useTranslation } from "react-i18next";
+import { Icon } from '@iconify/react/dist/iconify.js'
+import { useTranslation } from 'react-i18next'
+
+import { Button } from '@lifeforge/ui'
 
 function Header() {
-  const { t } = useTranslation("core.apiExplorer");
+  const { t } = useTranslation('core.apiExplorer')
 
   return (
     <header className="flex w-full items-center justify-between p-6">
@@ -13,7 +14,7 @@ function Header() {
           <div className="text-xl font-semibold">
             LifeForge<span className="text-custom-400">.</span>
           </div>
-          <div className="text-sm font-medium text-bg-500">{t("title")}</div>
+          <div className="text-bg-500 text-sm font-medium">{t('title')}</div>
         </div>
       </h1>
       <Button
@@ -26,7 +27,7 @@ function Header() {
         href="https://github.com/Lifeforge-app/lifeforge-api-explorer"
       />
     </header>
-  );
+  )
 }
 
-export default Header;
+export default Header

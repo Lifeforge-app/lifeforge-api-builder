@@ -1,5 +1,5 @@
 function CollectionPickFieldsNode() {
-  return <div>FieldSelectorNode</div>;
+  return <div>FieldSelectorNode</div>
 }
 
-export default CollectionPickFieldsNode;
+export default CollectionPickFieldsNode

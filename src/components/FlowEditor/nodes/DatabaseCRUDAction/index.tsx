@@ -1,5 +1,5 @@
-import NodeColumn from "../../components/NodeColumn";
-import NodeColumnWrapper from "../../components/NodeColumnWrapper";
+import NodeColumn from '../../components/Node/NodeColumn'
+import NodeColumnWrapper from '../../components/Node/NodeColumnWrapper'
 
 function DatabaseCRUDAction() {
   return (
@@ -7,7 +7,7 @@ function DatabaseCRUDAction() {
       <NodeColumn nodeType="databaseCRUDAction" handle="db-operation-input" />
       <NodeColumn nodeType="databaseCRUDAction" handle="action-output" />
     </NodeColumnWrapper>
-  );
+  )
 }
 
-export default DatabaseCRUDAction;
+export default DatabaseCRUDAction

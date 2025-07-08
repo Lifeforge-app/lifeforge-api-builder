@@ -1,10 +1,10 @@
-import { type Node, type Edge, getOutgoers, getIncomers } from "@xyflow/react";
+import { type Edge, type Node, getIncomers, getOutgoers } from '@xyflow/react'
 
-export type Direction = "out" | "in";
+export type Direction = 'out' | 'in'
 
 export interface StepDescriptor {
-  dir: Direction;
-  type: string;
+  dir: Direction
+  type: string
 }
 
 export function traverseGraph(
@@ -13,18 +13,18 @@ export function traverseGraph(
   startNodeId: string,
   path: StepDescriptor[]
 ): Node | null {
-  let current = nodes.find((n) => n.id === startNodeId);
-  if (!current) return null;
+  let current = nodes.find(n => n.id === startNodeId)
+  if (!current) return null
 
   for (const step of path) {
     const nextCandidates: Node[] =
-      step.dir === "out"
+      step.dir === 'out'
         ? getOutgoers(current, nodes, edges)
-        : getIncomers(current, nodes, edges);
+        : getIncomers(current, nodes, edges)
 
-    current = nextCandidates.find((n) => n.type === step.type) || undefined;
-    if (!current) return null;
+    current = nextCandidates.find(n => n.type === step.type) || undefined
+    if (!current) return null
   }
 
-  return current;
+  return current
 }

@@ -23,6 +23,7 @@
       },
       "devDependencies": {
         "@eslint/js": "^9.29.0",
+        "@trivago/prettier-plugin-sort-imports": "^5.2.2",
         "@types/javascript-color-gradient": "^2.4.2",
         "@types/lodash": "^4.17.20",
         "@types/react": "^19.1.8",
@@ -33,6 +34,7 @@
         "eslint-plugin-react-hooks": "^5.2.0",
         "eslint-plugin-react-refresh": "^0.4.20",
         "globals": "^16.2.0",
+        "prettier-plugin-tailwindcss": "^0.6.13",
         "typescript": "~5.8.3",
         "typescript-eslint": "^8.34.1",
         "vite": "^7.0.0",
@@ -474,6 +476,8 @@
 
     "@tanstack/virtual-core": ["@tanstack/virtual-core@3.13.12", "", {}, "sha512-1YBOJfRHV4sXUmWsFSf5rQor4Ss82G8dQWLRbnk3GA4jeP8hQt1hxXh0tmflpC0dz3VgEv/1+qwPyLeWkQuPFA=="],
 
+    "@trivago/prettier-plugin-sort-imports": ["@trivago/prettier-plugin-sort-imports@5.2.2", "", { "dependencies": { "@babel/generator": "^7.26.5", "@babel/parser": "^7.26.7", "@babel/traverse": "^7.26.7", "@babel/types": "^7.26.7", "javascript-natural-sort": "^0.7.1", "lodash": "^4.17.21" }, "peerDependencies": { "@vue/compiler-sfc": "3.x", "prettier": "2.x - 3.x", "prettier-plugin-svelte": "3.x", "svelte": "4.x || 5.x" }, "optionalPeers": ["@vue/compiler-sfc", "prettier-plugin-svelte", "svelte"] }, "sha512-fYDQA9e6yTNmA13TLVSA+WMQRc5Bn/c0EUBditUHNfMMxN7M82c38b1kEggVE3pLpZ0FwkwJkUEKMiOi52JXFA=="],
+
     "@tsconfig/svelte": ["@tsconfig/svelte@1.0.13", "", {}, "sha512-5lYJP45Xllo4yE/RUBccBT32eBlRDbqN8r1/MIvQbKxW3aFqaYPCNgm8D5V20X4ShHcwvYWNlKg3liDh1MlBoA=="],
 
     "@types/babel__core": ["@types/babel__core@7.20.5", "", { "dependencies": { "@babel/parser": "^7.20.7", "@babel/types": "^7.20.7", "@types/babel__generator": "*", "@types/babel__template": "*", "@types/babel__traverse": "*" } }, "sha512-qoQprZvz5wQFJwMDqeseRXWv3rqMvhgpbXFfVyWhbx9X47POIA6i/+dXefEmZKoAgOaTdaIgNSMqMIU61yRyzA=="],
@@ -896,6 +900,8 @@
 
     "javascript-color-gradient": ["javascript-color-gradient@2.5.0", "", {}, "sha512-NfmEygIgldzvs/HUZ9EXjZENhh2q9aB1T/vZvCtQ5EKkuFfJ1/RKWcWd9YNA9BdBYTAh3odokubysjr2dBBZtg=="],
 
+    "javascript-natural-sort": ["javascript-natural-sort@0.7.1", "", {}, "sha512-nO6jcEfZWQXDhOiBtG2KvKyEptz7RVbpGP4vTD2hLBdmNQSsCiicO2Ioinv6UI4y9ukqnBpy+XZ9H6uLNgJTlw=="],
+
     "jiti": ["jiti@2.4.2", "", { "bin": { "jiti": "lib/jiti-cli.mjs" } }, "sha512-rg9zJN+G4n2nfJl5MW3BMygZX56zKPNVEYYqq7adpmMh4Jn2QNEwhvQlFy6jPVdcod7txZtKHWnyZiA3a0zP7A=="],
 
     "js-tokens": ["js-tokens@4.0.0", "", {}, "sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ=="],
@@ -1045,6 +1051,10 @@
     "prefix-style": ["prefix-style@2.0.1", "", {}, "sha512-gdr1MBNVT0drzTq95CbSNdsrBDoHGlb2aDJP/FoY+1e+jSDPOb1Cv554gH2MGiSr2WTcXi/zu+NaFzfcHQkfBQ=="],
 
     "prelude-ls": ["prelude-ls@1.2.1", "", {}, "sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g=="],
+
+    "prettier": ["prettier@3.6.2", "", { "bin": { "prettier": "bin/prettier.cjs" } }, "sha512-I7AIg5boAr5R0FFtJ6rCfD+LFsWHp81dolrFD8S79U9tb8Az2nGrJncnMSnys+bpQJfRUzqs9hnA81OAA3hCuQ=="],
+
+    "prettier-plugin-tailwindcss": ["prettier-plugin-tailwindcss@0.6.13", "", { "peerDependencies": { "@ianvs/prettier-plugin-sort-imports": "*", "@prettier/plugin-pug": "*", "@shopify/prettier-plugin-liquid": "*", "@trivago/prettier-plugin-sort-imports": "*", "@zackad/prettier-plugin-twig": "*", "prettier": "^3.0", "prettier-plugin-astro": "*", "prettier-plugin-css-order": "*", "prettier-plugin-import-sort": "*", "prettier-plugin-jsdoc": "*", "prettier-plugin-marko": "*", "prettier-plugin-multiline-arrays": "*", "prettier-plugin-organize-attributes": "*", "prettier-plugin-organize-imports": "*", "prettier-plugin-sort-imports": "*", "prettier-plugin-style-order": "*", "prettier-plugin-svelte": "*" }, "optionalPeers": ["@ianvs/prettier-plugin-sort-imports", "@prettier/plugin-pug", "@shopify/prettier-plugin-liquid", "@trivago/prettier-plugin-sort-imports", "@zackad/prettier-plugin-twig", "prettier-plugin-astro", "prettier-plugin-css-order", "prettier-plugin-import-sort", "prettier-plugin-jsdoc", "prettier-plugin-marko", "prettier-plugin-multiline-arrays", "prettier-plugin-organize-attributes", "prettier-plugin-organize-imports", "prettier-plugin-sort-imports", "prettier-plugin-style-order", "prettier-plugin-svelte"] }, "sha512-uQ0asli1+ic8xrrSmIOaElDu0FacR4x69GynTh2oZjFY10JUt6EEumTQl5tB4fMeD6I1naKd+4rXQQ7esT2i1g=="],
 
     "pretty-ms": ["pretty-ms@8.0.0", "", { "dependencies": { "parse-ms": "^3.0.0" } }, "sha512-ASJqOugUF1bbzI35STMBUpZqdfYKlJugy6JBziGi2EE+AL5JPJGSzvpeVXojxrr0ViUYoToUjb5kjSEGf7Y83Q=="],
 

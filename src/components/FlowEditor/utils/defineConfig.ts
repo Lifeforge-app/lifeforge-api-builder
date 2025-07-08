@@ -1,4 +1,4 @@
-import type { IHandler, INodeConfig } from "../typescript/node";
+import type { IHandler, INodeConfig } from '../typescript/node'
 
 export default function defineNodeConfig<
   D extends Record<string, any> | undefined
@@ -6,6 +6,6 @@ export default function defineNodeConfig<
   return function <H extends Record<string, IHandler>>(
     config: INodeConfig<D, H>
   ) {
-    return config;
-  };
+    return config
+  }
 }

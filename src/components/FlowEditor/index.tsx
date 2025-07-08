@@ -1,49 +1,51 @@
 import {
-  ReactFlow,
-  ReactFlowProvider,
   Background,
-  Controls,
-  MiniMap,
   type Connection,
-  type Node,
+  Controls,
   type Edge,
-} from "@xyflow/react";
-import "@xyflow/react/dist/style.css";
-import ConnectionLine from "./components/ConnectionLine";
-import { default as EdgeComponent } from "./components/Edge";
-import usePersonalization from "../../providers/PersonalizationProvider/usePersonalization";
-import { isValidConnection } from "./utils/isValidConnection";
-import { NodeDataContext } from "./providers/NodeDataProviders";
-import { useFlowState } from "./hooks/useFlowState";
-import { useFlowKeyboardHandlers } from "./hooks/useFlowKeyboardHandlers";
-import { useFlowPersistence } from "./hooks/useFlowPersistence";
-import { createNodeTypes } from "./utils/createNodeTypes";
-import { SaveButton } from "./components/SaveButton";
-import NODE_CONFIG, { type NODE_TYPES } from "./nodes";
+  MiniMap,
+  type Node,
+  ReactFlow,
+  ReactFlowProvider
+} from '@xyflow/react'
 
-const NODE_TYPES = createNodeTypes();
+import '@xyflow/react/dist/style.css'
+
+import usePersonalization from '../../providers/PersonalizationProvider/usePersonalization'
+import ConnectionLine from './components/ConnectionLine'
+import { default as EdgeComponent } from './components/Edge'
+import { SaveButton } from './components/SaveButton'
+import { useFlowKeyboardHandlers } from './hooks/useFlowKeyboardHandlers'
+import { useFlowPersistence } from './hooks/useFlowPersistence'
+import { useFlowState } from './hooks/useFlowState'
+import NODE_CONFIG, { type NODE_TYPES } from './nodes'
+import { NodeDataContext } from './providers/NodeDataProviders'
+import { createNodeTypes } from './utils/createNodeTypes'
+import { isValidConnection } from './utils/isValidConnection'
+
+const NODE_TYPES = createNodeTypes()
 
 function FlowEditor() {
-  const { derivedTheme, bgTempPalette } = usePersonalization();
-  const flowState = useFlowState();
+  const { derivedTheme, bgTempPalette } = usePersonalization()
+  const flowState = useFlowState()
   useFlowPersistence({
     setNodes: flowState.setNodes,
     setEdges: flowState.setEdges,
-    setNodeData: flowState.setNodeData,
-  });
+    setNodeData: flowState.setNodeData
+  })
 
   useFlowKeyboardHandlers({
-    onAddNode: flowState.onAddNode,
-  });
+    onAddNode: flowState.onAddNode
+  })
 
   return (
     <NodeDataContext
       value={{
         updateNodeData: flowState.updateNodeData,
-        getNodeData: flowState.getNodeData,
+        getNodeData: flowState.getNodeData
       }}
     >
-      <div className="w-screen h-screen bg-bg-100 dark:bg-bg-950">
+      <div className="bg-bg-100 dark:bg-bg-950 h-screen w-screen">
         <ReactFlow
           colorMode={derivedTheme}
           nodes={flowState.nodes}
@@ -53,7 +55,7 @@ function FlowEditor() {
           onConnect={flowState.onConnect}
           nodeTypes={NODE_TYPES}
           edgeTypes={{
-            default: EdgeComponent,
+            default: EdgeComponent
           }}
           connectionLineComponent={ConnectionLine}
           isValidConnection={(connection: Connection | Edge) =>
@@ -65,7 +67,7 @@ function FlowEditor() {
         >
           <Background
             color={
-              derivedTheme === "dark" ? bgTempPalette[800] : bgTempPalette[400]
+              derivedTheme === 'dark' ? bgTempPalette[800] : bgTempPalette[400]
             }
             gap={20}
             offset={20}
@@ -83,7 +85,7 @@ function FlowEditor() {
         <SaveButton nodeData={flowState.nodeData} />
       </div>
     </NodeDataContext>
-  );
+  )
 }
 
 function FlowEditorWrapper() {
@@ -91,7 +93,7 @@ function FlowEditorWrapper() {
     <ReactFlowProvider>
       <FlowEditor />
     </ReactFlowProvider>
-  );
+  )
 }
 
-export default FlowEditorWrapper;
+export default FlowEditorWrapper
