@@ -55,7 +55,7 @@ const NODE_CONFIG = {
 
 const NODES_CATEGORIES: {
   name: string;
-  nodes: (keyof typeof NODE_CONFIG)[];
+  nodes: NODE_TYPES[];
 }[] = [
   {
     name: "Database",

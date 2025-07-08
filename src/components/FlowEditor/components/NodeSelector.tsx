@@ -1,6 +1,6 @@
 import { ModalHeader, SearchInput } from "@lifeforge/ui";
 import { useState } from "react";
-import NODE_CONFIG, { NODES_CATEGORIES } from "../nodes";
+import NODE_CONFIG, { NODES_CATEGORIES, type NODE_TYPES } from "../nodes";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { useTranslation } from "react-i18next";
 import _ from "lodash";
@@ -12,7 +12,7 @@ function NodeSelector({
 }: {
   onClose: () => void;
   data: {
-    onSelect: (nodeType: keyof typeof NODE_CONFIG) => void;
+    onSelect: (nodeType: NODE_TYPES) => void;
   };
 }) {
   const { t } = useTranslation("core.apiBuilder");

@@ -1,16 +1,15 @@
 import { Handle, Position, useNodeConnections, useNodeId } from "@xyflow/react";
 import clsx from "clsx";
-import NODE_CONFIG from "../nodes";
+import NODE_CONFIG, { type NODE_TYPES } from "../nodes";
 import { useTranslation } from "react-i18next";
 import _ from "lodash";
 import { useMemo } from "react";
 import type { IHandler } from "../typescript/node";
 
-type NodeType = keyof typeof NODE_CONFIG;
-type NodeHandlers<T extends NodeType> = (typeof NODE_CONFIG)[T]["handlers"];
-type NodeHandlerKey<T extends NodeType> = keyof NodeHandlers<T>;
+type NodeHandlers<T extends NODE_TYPES> = (typeof NODE_CONFIG)[T]["handlers"];
+type NodeHandlerKey<T extends NODE_TYPES> = keyof NodeHandlers<T>;
 
-type NodeColumnProps<T extends NodeType> =
+type NodeColumnProps<T extends NODE_TYPES> =
   | {
       nodeType: T;
       handle: NodeHandlerKey<T>;
@@ -24,7 +23,7 @@ type NodeColumnProps<T extends NodeType> =
       children?: React.ReactNode;
     };
 
-function NodeColumn<T extends NodeType>({
+function NodeColumn<T extends NODE_TYPES>({
   nodeType,
   handle,
   label,

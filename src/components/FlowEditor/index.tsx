@@ -19,7 +19,7 @@ import { useFlowKeyboardHandlers } from "./hooks/useFlowKeyboardHandlers";
 import { useFlowPersistence } from "./hooks/useFlowPersistence";
 import { createNodeTypes } from "./utils/createNodeTypes";
 import { SaveButton } from "./components/SaveButton";
-import NODE_CONFIG from "./nodes";
+import NODE_CONFIG, { type NODE_TYPES } from "./nodes";
 
 const NODE_TYPES = createNodeTypes();
 
@@ -73,8 +73,7 @@ function FlowEditor() {
           />
           <MiniMap
             nodeStrokeColor={(node: Node) =>
-              NODE_CONFIG[node.type as keyof typeof NODE_CONFIG].color ||
-              bgTempPalette[500]
+              NODE_CONFIG[node.type as NODE_TYPES].color || bgTempPalette[500]
             }
             nodeStrokeWidth={5}
             nodeBorderRadius={6}

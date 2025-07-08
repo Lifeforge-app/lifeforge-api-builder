@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef } from "react";
 import { useReactFlow } from "@xyflow/react";
 import { useModalStore } from "@lifeforge/ui";
 import NodeSelector from "../components/NodeSelector";
-import NODE_CONFIG from "../nodes";
+import { type NODE_TYPES } from "../nodes";
 import type { FlowStateActions } from "./useFlowState";
 
 interface UseFlowKeyboardHandlersProps {
@@ -42,7 +42,7 @@ export function useFlowKeyboardHandlers({
         });
 
         open(NodeSelector, {
-          onSelect: (nodeType: keyof typeof NODE_CONFIG) => {
+          onSelect: (nodeType: NODE_TYPES) => {
             onAddNode(nodeType, position);
           },
         });

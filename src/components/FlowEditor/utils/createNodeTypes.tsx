@@ -1,7 +1,7 @@
 import React from "react";
 import { type NodeProps } from "@xyflow/react";
 import { default as NodeComponent } from "../components/Node";
-import NODE_CONFIG from "../nodes";
+import NODE_CONFIG, { type NODE_TYPES } from "../nodes";
 
 export function createNodeTypes(): Record<
   string,
@@ -10,10 +10,10 @@ export function createNodeTypes(): Record<
   const nodeTypes: Record<string, React.ComponentType<NodeProps>> = {};
 
   Object.keys(NODE_CONFIG).forEach((key) => {
-    const Component = NODE_CONFIG[key as keyof typeof NODE_CONFIG].component;
+    const Component = NODE_CONFIG[key as NODE_TYPES].component;
 
     nodeTypes[key] = (props: NodeProps) => (
-      <NodeComponent {...props} nodeType={key as keyof typeof NODE_CONFIG}>
+      <NodeComponent {...props} nodeType={key as NODE_TYPES}>
         <Component {...(props as any)} />
       </NodeComponent>
     );

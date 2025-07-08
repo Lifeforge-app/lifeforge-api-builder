@@ -1,7 +1,7 @@
 import { Icon } from "@iconify/react/dist/iconify.js";
 import clsx from "clsx";
 import React from "react";
-import NODE_CONFIG from "../nodes";
+import NODE_CONFIG, { type NODE_TYPES } from "../nodes";
 import { useTranslation } from "react-i18next";
 import _ from "lodash";
 import { oklchToHex } from "../../../utils/colors";
@@ -11,7 +11,7 @@ function Node({
   selected,
   children,
 }: {
-  nodeType: keyof typeof NODE_CONFIG;
+  nodeType: NODE_TYPES;
   selected?: boolean;
   children?: React.ReactNode;
 }) {

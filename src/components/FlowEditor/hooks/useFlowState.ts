@@ -8,7 +8,7 @@ import type {
   EdgeChange,
   Connection,
 } from "@xyflow/react";
-import NODE_CONFIG from "../nodes";
+import NODE_CONFIG, { type NODE_TYPES } from "../nodes";
 
 export interface FlowState {
   nodes: Node[];
@@ -20,10 +20,7 @@ export interface FlowStateActions {
   onNodesChange: (changes: NodeChange[]) => void;
   onEdgesChange: (changes: EdgeChange[]) => void;
   onConnect: (params: Connection) => void;
-  onAddNode: (
-    type: keyof typeof NODE_CONFIG,
-    position: { x: number; y: number }
-  ) => void;
+  onAddNode: (type: NODE_TYPES, position: { x: number; y: number }) => void;
   getNodeData: <T extends Record<string, any>>(id: string) => T;
   updateNodeData: <T extends Record<string, any>>(
     id: string,
@@ -56,7 +53,7 @@ export function useFlowState(): FlowState & FlowStateActions {
   }, []);
 
   const onAddNode = useCallback(
-    (type: keyof typeof NODE_CONFIG, position: { x: number; y: number }) => {
+    (type: NODE_TYPES, position: { x: number; y: number }) => {
       let data: Record<string, any> = {};
       if ("data" in NODE_CONFIG[type]) {
         data = NODE_CONFIG[type].data || {};

@@ -5,7 +5,7 @@ import {
   type EdgeProps,
 } from "@xyflow/react";
 import { useMemo } from "react";
-import NODE_CONFIG from "../nodes";
+import NODE_CONFIG, { type NODE_TYPES } from "../nodes";
 
 function Edge({
   source,
@@ -36,9 +36,7 @@ function Edge({
       path={edgePath}
       markerEnd={markerEnd}
       style={{
-        stroke:
-          NODE_CONFIG[sourceNode?.type as keyof typeof NODE_CONFIG]?.color ||
-          "gray",
+        stroke: NODE_CONFIG[sourceNode?.type as NODE_TYPES]?.color || "gray",
       }}
     />
   );

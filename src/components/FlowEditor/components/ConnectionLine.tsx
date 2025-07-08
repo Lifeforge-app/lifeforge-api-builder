@@ -1,5 +1,5 @@
 import { useConnection } from "@xyflow/react";
-import NODE_CONFIG from "../nodes";
+import NODE_CONFIG, { type NODE_TYPES } from "../nodes";
 import { useMemo } from "react";
 
 function ConnectionLine({
@@ -17,8 +17,7 @@ function ConnectionLine({
   const color = useMemo(() => {
     return (
       NODE_CONFIG[
-        (fromHandle?.type === "source" ? fromNode : toNode)
-          ?.type as keyof typeof NODE_CONFIG
+        (fromHandle?.type === "source" ? fromNode : toNode)?.type as NODE_TYPES
       ]?.color || "gray"
     );
   }, [fromHandle, fromNode, toNode]);

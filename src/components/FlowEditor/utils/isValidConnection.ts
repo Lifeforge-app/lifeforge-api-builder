@@ -4,7 +4,7 @@ import {
   type Edge,
   type Node,
 } from "@xyflow/react";
-import NODE_CONFIG from "../nodes";
+import NODE_CONFIG, { type NODE_TYPES } from "../nodes";
 import type { IHandler } from "../typescript/node";
 
 const hasCycle = (
@@ -59,8 +59,8 @@ export const isValidConnection = (
 
   if (hasCycle(targetNode, connection.source, nodes, edges)) return false;
 
-  const tgtCfg = NODE_CONFIG[targetNode.type as keyof typeof NODE_CONFIG];
-  const srcCfg = NODE_CONFIG[sourceNode.type as keyof typeof NODE_CONFIG];
+  const tgtCfg = NODE_CONFIG[targetNode.type as NODE_TYPES];
+  const srcCfg = NODE_CONFIG[sourceNode.type as NODE_TYPES];
   if (!tgtCfg || !srcCfg) return false;
 
   const tgtHandler = tgtCfg.handlers[
@@ -89,9 +89,7 @@ export const isValidConnection = (
 
   if (
     tgtHandler.filter?.node &&
-    !tgtHandler.filter.node.includes(
-      sourceNode.type as keyof typeof NODE_CONFIG
-    )
+    !tgtHandler.filter.node.includes(sourceNode.type as NODE_TYPES)
   ) {
     return false;
   }
