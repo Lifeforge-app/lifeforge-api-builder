@@ -93,11 +93,11 @@ const NODE_CONFIG: {
   },
   schema: {
     name: "Schema",
-    icon: "tabler:database",
+    icon: "solar:structure-outline",
     component: SchemaNode,
     color: colors.blue[500],
     data: {
-      name: "New Schema",
+      name: "NewSchema",
       fields: [],
     },
   },
@@ -129,6 +129,7 @@ const NODE_CONFIG: {
     component: SchemaPickFieldsNode,
     color: colors.blue[500],
     data: {
+      fieldIds: [],
       fields: [],
     },
   },

@@ -1,3 +1,6 @@
+import type { ISchemaField } from "../SchemaNode/types";
+
 export interface IPickFieldsFromSchemaNodeData {
-  fields: string[];
+  fieldIds: string[];
+  fields: ISchemaField[];
 }

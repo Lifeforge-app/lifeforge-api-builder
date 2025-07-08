@@ -8,7 +8,7 @@ import NodeListbox from "../../components/NodeListbox";
 import type { ICollectionNodeData } from "../CollectionNode/types";
 import NodeListboxOption from "../../components/NodeListboxOption";
 import { traverseGraph } from "../../../../utils/traverseGraph";
-import { useNodeData, useUpdateNodeData } from "../..";
+import { useGetNodeData, useNodeData, useUpdateNodeData } from "../..";
 
 const OPERATIONS = [
   { value: "=", label: "Equals" },
@@ -23,6 +23,7 @@ const OPERATIONS = [
 
 function FilterNode({ id }: { id: string }) {
   const { t } = useTranslation("core.apiBuilder");
+  const getNodeData = useGetNodeData();
   const { columnName, comparator } = useNodeData<IFilterNodeData>(id);
   const updateNode = useUpdateNodeData();
   const allNodes = useNodes();
@@ -48,10 +49,11 @@ function FilterNode({ id }: { id: string }) {
   const selectableColumns = useMemo(() => {
     if (!targetCollection) return [];
 
-    const collectionNodeData =
-      targetCollection.data as unknown as ICollectionNodeData;
+    const collectionNodeData = getNodeData<ICollectionNodeData>(
+      targetCollection.id
+    );
     return collectionNodeData.fields;
-  }, [targetCollection]);
+  }, [targetCollection, getNodeData]);
 
   const targetRequestSchema = useMemo(() => {
     if (outputConnections.length === 0) return null;

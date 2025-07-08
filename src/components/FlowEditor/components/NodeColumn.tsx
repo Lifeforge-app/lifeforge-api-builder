@@ -30,7 +30,6 @@ function NodeColumn({
     );
   }, [connections, handle, position, nodeId]);
 
-  console.log(label, position, filteredConnections);
   const isConnectable = useMemo(() => {
     if (!handle) return true;
     if (handle.cardinality === "many" || !handle.cardinality) {

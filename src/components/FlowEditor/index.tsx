@@ -146,7 +146,10 @@ const isValidConnection = (
 
 const NodeDataContext = createContext<{
   getNodeData: <T extends Record<string, any>>(id: string) => T;
-  updateNodeData: (id: string, data: any) => void;
+  updateNodeData: <T extends Record<string, any>>(
+    id: string,
+    data: T | ((prevData: T) => T)
+  ) => void;
 }>({
   getNodeData: <T extends Record<string, any>>(id: string) => ({} as T),
   updateNodeData: () => {},
@@ -277,8 +280,22 @@ function FlowEditor() {
     [nodeData]
   );
 
-  const updateNode = useCallback(
-    (id: string, data: any) => {
+  const updateNodeData = useCallback(
+    <T extends Record<string, any>>(
+      id: string,
+      data: T | ((prevData: T) => T)
+    ): void => {
+      if (typeof data === "function") {
+        setNodeData((prevData) => ({
+          ...prevData,
+          [id]: {
+            ...prevData[id],
+            ...data(prevData[id]),
+          },
+        }));
+        return;
+      }
+
       setNodeData((prevData) => ({
         ...prevData,
         [id]: {
@@ -287,11 +304,11 @@ function FlowEditor() {
         },
       }));
     },
-    [setNodeData]
+    []
   );
 
   return (
-    <NodeDataContext value={{ updateNodeData: updateNode, getNodeData }}>
+    <NodeDataContext value={{ updateNodeData: updateNodeData, getNodeData }}>
       <div className="w-screen h-screen bg-bg-100 dark:bg-bg-950">
         <ReactFlow
           colorMode={derivedTheme}

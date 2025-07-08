@@ -11,32 +11,46 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import clsx from "clsx";
 import FIELD_TYPES from "../SchemaNode/constants/field_types";
 import { useGetNodeData, useNodeData, useUpdateNodeData } from "../..";
+import FieldsColumn from "../SchemaNode/components/FieldsColumn";
 
 function SchemaPickFieldsNode({ id }: { id: string }) {
   const { t } = useTranslation("core.apiBuilder");
-  const { fields } = useNodeData<IPickFieldsFromSchemaNodeData>(id);
-  const updateNode = useUpdateNodeData();
+  const { fieldIds, fields } = useNodeData<IPickFieldsFromSchemaNodeData>(id);
+  const updateNodeData = useUpdateNodeData();
   const getNodeData = useGetNodeData();
   const connections = useNodeConnections();
-  const inputSchemaNodeId = useMemo(() => {
-    const inputSchemaNodeConnections = connections.filter(
-      (c) => c.targetHandle === "schema-input" && c.target === id
-    );
-    if (inputSchemaNodeConnections.length === 0) return null;
-    return inputSchemaNodeConnections[0].source;
-  }, [connections, id]);
-
-  const availableFields = useMemo(() => {
-    if (!inputSchemaNodeId) return [];
-    const inputSchemaNodeData = getNodeData<ISchemaNodeData>(inputSchemaNodeId);
-    return inputSchemaNodeData?.fields || [];
-  }, [inputSchemaNodeId, getNodeData]);
+  const inputConnections = useMemo(
+    () =>
+      connections.filter(
+        (conn) => conn.targetHandle === "schema-input" && conn.target === id
+      ),
+    [connections, id]
+  );
+  const inputSchemaData = useMemo(() => {
+    if (inputConnections.length === 0) return null;
+    const inputSchemaNodeId = inputConnections[0].source;
+    return getNodeData<ISchemaNodeData>(inputSchemaNodeId);
+  }, [inputConnections, getNodeData]);
 
   useEffect(() => {
-    if (!inputSchemaNodeId || !availableFields.length) {
-      updateNode(id, { fields: [] });
+    if (!inputSchemaData) {
+      updateNodeData(id, { fieldIds: [], fields: [] });
+      return;
     }
-  }, [inputSchemaNodeId, id, updateNode, availableFields.length]);
+
+    updateNodeData<IPickFieldsFromSchemaNodeData>(id, (prevData) => {
+      const newFieldIds = prevData.fieldIds.filter((fieldId) =>
+        inputSchemaData.fields.some((field) => field.name === fieldId)
+      );
+      return {
+        ...prevData,
+        fieldIds: newFieldIds,
+        fields: inputSchemaData.fields.filter((field) =>
+          newFieldIds.includes(field.name)
+        ),
+      };
+    });
+  }, [inputSchemaData, id, updateNodeData]);
 
   return (
     <NodeColumnWrapper>
@@ -45,44 +59,60 @@ function SchemaPickFieldsNode({ id }: { id: string }) {
         handle={{ id: "schema-input", nodeType: "schema", cardinality: 1 }}
         position="left"
       />
-      <NodeColumn label="Fields">
-        {inputSchemaNodeId ? (
-          <NodeListbox
-            multiple
-            value={fields}
-            setValue={(value: string[]) => updateNode(id, { fields: value })}
-          >
-            {availableFields.map((field) => (
-              <NodeListboxOption key={field.name} value={field.name}>
-                <div
-                  className={clsx(
-                    "flex flex-between w-full",
-                    fields.includes(field.name) &&
-                      "text-bg-900 dark:text-bg-100"
-                  )}
-                >
-                  <div className="flex items-center gap-2">
-                    <Icon
-                      icon={
-                        FIELD_TYPES.find(
-                          (t) => t.label.toLowerCase() === field.type
-                        )?.icon || "tabler:abc"
-                      }
-                      className="size-4 text-bg-500"
-                    />
-                    {field.name}
+      <NodeColumn label="Field IDs">
+        {inputSchemaData ? (
+          inputSchemaData.fields.length > 0 ? (
+            <NodeListbox
+              multiple
+              value={fieldIds}
+              setValue={(value: string[]) =>
+                updateNodeData(id, {
+                  fieldIds: value,
+                  fields: inputSchemaData.fields.filter((field) =>
+                    value.includes(field.name)
+                  ),
+                })
+              }
+            >
+              {inputSchemaData.fields.map((field) => (
+                <NodeListboxOption key={field.name} value={field.name}>
+                  <div
+                    className={clsx(
+                      "flex flex-between w-full",
+                      fieldIds.includes(field.name) &&
+                        "text-bg-900 dark:text-bg-100"
+                    )}
+                  >
+                    <div className="flex items-center gap-2">
+                      <Icon
+                        icon={
+                          FIELD_TYPES.find(
+                            (t) => t.label.toLowerCase() === field.type
+                          )?.icon || "tabler:abc"
+                        }
+                        className="size-4 text-bg-500"
+                      />
+                      {field.name}
+                    </div>
+                    {fieldIds.includes(field.name) && (
+                      <Icon icon="tabler:check" />
+                    )}
                   </div>
-                  {fields.includes(field.name) && <Icon icon="tabler:check" />}
-                </div>
-              </NodeListboxOption>
-            ))}
-          </NodeListbox>
+                </NodeListboxOption>
+              ))}
+            </NodeListbox>
+          ) : (
+            <p className="text-center text-bg-500">
+              {t("empty.noFieldsInSchema")}
+            </p>
+          )
         ) : (
           <p className="text-center text-bg-500">
             {t("empty.noSchemaConnected")}
           </p>
         )}
       </NodeColumn>
+      <FieldsColumn fields={fields} />
       <NodeColumn
         label="Schema"
         handle={{ id: "schema-output", nodeType: "schema" }}

@@ -49,9 +49,9 @@ function CollectionNode({ id }: { id: string }) {
             {fields.map((field, index) => (
               <div
                 key={index}
-                className="flex justify-between items-center p-2 rounded border border-bg-200 dark:border-bg-800 component-bg-lighter"
+                className="flex justify-between items-center p-2 gap-3 rounded border border-bg-200 dark:border-bg-800 component-bg-lighter"
               >
-                <span className="text-bg-600 dark:text-bg-400">
+                <span className="text-bg-600 dark:text-bg-400 truncate">
                   {field.name}
                 </span>
                 <span className="text-bg-500">{field.type}</span>
