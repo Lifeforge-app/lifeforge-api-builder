@@ -51,10 +51,10 @@ function NodeColumn<T extends NodeType>({
   const filteredConnections = useMemo(() => {
     if (!handle) return [];
 
-    return connections.filter((conn) =>
+    return connections.filter((connection) =>
       isInput
-        ? conn.targetHandle === handle && conn.target === nodeId
-        : conn.sourceHandle === handle && conn.source === nodeId
+        ? connection.targetHandle === handle && connection.target === nodeId
+        : connection.sourceHandle === handle && connection.source === nodeId
     );
   }, [handle, nodeId, connections, isInput]);
 

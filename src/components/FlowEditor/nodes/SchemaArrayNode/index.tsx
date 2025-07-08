@@ -12,7 +12,8 @@ function SchemaArrayNode({ id }: { id: string }) {
   const connections = useNodeConnections();
   const getNodeData = useGetNodeData();
   const schemaInputConnections = connections.filter(
-    (conn) => conn.targetHandle === "schema-input" && conn.target === id
+    (connection) =>
+      connection.targetHandle === "schema-input" && connection.target === id
   );
   const schemaInputData = useMemo(() => {
     if (schemaInputConnections.length === 0) return null;
