@@ -1,6 +1,6 @@
 import { ModalHeader, SearchInput } from "@lifeforge/ui";
 import { useState } from "react";
-import NODE_CONFIG, { NODES_CATEGORIES } from "../constants/node_constants";
+import NODE_CONFIG, { NODES_CATEGORIES } from "../nodes";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { useTranslation } from "react-i18next";
 import _ from "lodash";

@@ -1,3 +1,5 @@
+import NodeColumnValueWrapper from "./NodeColumnValueWrapper";
+
 function NodeTextInput({
   value,
   setValue,
@@ -10,7 +12,7 @@ function NodeTextInput({
   disabled?: boolean;
 }) {
   return (
-    <div className="border border border-bg-200 disabled:text-bg-500 dark:border-bg-800 component-bg-lighter rounded-md h-10 flex items-center px-3 w-full">
+    <NodeColumnValueWrapper>
       <input
         type="text"
         value={value}
@@ -19,7 +21,7 @@ function NodeTextInput({
         className="w-full bg-transparent"
         disabled={disabled}
       />
-    </div>
+    </NodeColumnValueWrapper>
   );
 }
 

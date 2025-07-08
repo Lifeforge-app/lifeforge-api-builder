@@ -5,7 +5,7 @@ import {
   type EdgeProps,
 } from "@xyflow/react";
 import { useMemo } from "react";
-import NODE_CONFIG from "../constants/node_constants";
+import NODE_CONFIG from "../nodes";
 
 function Edge({
   source,

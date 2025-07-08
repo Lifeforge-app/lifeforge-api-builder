@@ -1,5 +1,5 @@
 import { useConnection } from "@xyflow/react";
-import NODE_CONFIG from "../constants/node_constants";
+import NODE_CONFIG from "../nodes";
 import { useMemo } from "react";
 
 function ConnectionLine({

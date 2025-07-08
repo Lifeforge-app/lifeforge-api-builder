@@ -1,7 +1,7 @@
 import { Icon } from "@iconify/react/dist/iconify.js";
 import clsx from "clsx";
 import React from "react";
-import NODE_CONFIG from "../constants/node_constants";
+import NODE_CONFIG from "../nodes";
 import { useTranslation } from "react-i18next";
 import _ from "lodash";
 import { oklchToHex } from "../../../utils/colors";
