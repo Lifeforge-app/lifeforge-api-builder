@@ -41,7 +41,16 @@ function CollectionSelector({
                   key={collection.name}
                   className="flex-between component-bg-with-hover hover:text-bg-900 dark:hover:text-bg-100 cursor-pointer rounded p-3"
                   onClick={() => {
-                    onSelect(collection)
+                    onSelect({
+                      ...collection,
+                      fields: [
+                        {
+                          name: 'id',
+                          type: 'string'
+                        },
+                        ...collection.fields
+                      ]
+                    })
                     onClose()
                   }}
                 >

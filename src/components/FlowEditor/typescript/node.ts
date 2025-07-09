@@ -11,6 +11,7 @@ export interface IHandler {
     handler?: string[]
     node?: NODE_TYPES[]
   }
+  dynamic?: boolean
 }
 
 export type INodeConfig<

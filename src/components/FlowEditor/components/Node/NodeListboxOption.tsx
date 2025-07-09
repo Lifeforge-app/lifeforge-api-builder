@@ -3,13 +3,13 @@ import { Icon } from '@iconify/react/dist/iconify.js'
 import clsx from 'clsx'
 import React from 'react'
 
-function NodeListboxOption({
+function NodeListboxOption<T>({
   isSelected,
   value,
   children
 }: {
   isSelected?: boolean
-  value: string
+  value: T
   children: React.ReactNode
 }) {
   return (

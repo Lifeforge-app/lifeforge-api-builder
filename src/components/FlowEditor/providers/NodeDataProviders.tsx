@@ -1,3 +1,4 @@
+import type { Edge } from '@xyflow/react'
 import { createContext, useContext } from 'react'
 
 export const NodeDataContext = createContext<{
@@ -6,9 +7,11 @@ export const NodeDataContext = createContext<{
     id: string,
     data: T | ((prevData: T) => T)
   ) => void
+  setEdges: React.Dispatch<React.SetStateAction<Edge[]>>
 }>({
   getNodeData: <T extends Record<string, any>>() => ({}) as T,
-  updateNodeData: () => {}
+  updateNodeData: () => {},
+  setEdges: () => {}
 })
 
 export function useGetNodeData() {
@@ -33,4 +36,12 @@ export function useNodeData<T extends Record<string, any>>(id: string): T {
     throw new Error('useGetNodeData must be used within NodeDataContext')
   }
   return context.getNodeData<T>(id)
+}
+
+export function useSetEdges() {
+  const context = useContext(NodeDataContext)
+  if (!context) {
+    throw new Error('useSetEdges must be used within NodeDataContext')
+  }
+  return context.setEdges
 }

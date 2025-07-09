@@ -3,41 +3,47 @@ import { Icon } from '@iconify/react/dist/iconify.js'
 import clsx from 'clsx'
 import { useTranslation } from 'react-i18next'
 
-type NodeListboxProps =
+type NodeListboxProps<T> =
   | {
       multiple: true
-      value: string[]
-      setValue: (value: string[]) => void
+      value: T[]
+      setValue: (value: T[]) => void
       buttonContent?: React.ReactNode
       children?: React.ReactNode
     }
   | {
       multiple?: false
-      value: string
-      setValue: (value: string) => void
+      value: T
+      setValue: (value: T) => void
       buttonContent?: React.ReactNode
       children?: React.ReactNode
     }
 
-function NodeListbox({
+function NodeListbox<T>({
   value,
   setValue,
   buttonContent,
   children,
   multiple
-}: NodeListboxProps) {
+}: NodeListboxProps<T>) {
   const { t } = useTranslation('core.apiBuilder')
 
   return (
     <Listbox multiple={multiple} value={value} onChange={setValue}>
       <ListboxButton className="border-bg-200 dark:border-bg-800 component-bg-lighter flex-between h-10 w-full gap-3 rounded-md border pr-2 pl-3">
         <div className="text-bg-600 dark:text-bg-400 w-full min-w-0 truncate text-left">
-          {value.length === 0 ? (
+          {!value ||
+          (Array.isArray(value) && value.length === 0) ||
+          JSON.stringify(value) === '{}' ? (
             <span className="text-bg-400 dark:text-bg-600">
               {t('empty.pleaseSelect')}
             </span>
           ) : (
-            buttonContent || <span>{multiple ? value.join(', ') : value}</span>
+            buttonContent || (
+              <span>
+                {multiple ? value.join(', ') : JSON.stringify(value ?? {})}
+              </span>
+            )
           )}
         </div>
         <Icon

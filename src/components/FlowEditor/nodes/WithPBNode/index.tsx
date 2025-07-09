@@ -15,8 +15,6 @@ import type { ISchemaField, ISchemaNodeData } from '../SchemaNode/types'
 
 const PB_SCHEMA: ISchemaField[] = [
   { name: 'id', type: 'string', isOptional: false },
-  { name: 'created', type: 'date', isOptional: false },
-  { name: 'updated', type: 'date', isOptional: false },
   { name: 'collectionId', type: 'string', isOptional: false },
   { name: 'collectionName', type: 'string', isOptional: false }
 ]

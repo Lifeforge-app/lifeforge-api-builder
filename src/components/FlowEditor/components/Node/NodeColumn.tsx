@@ -1,37 +1,56 @@
 import { Handle, Position, useNodeConnections, useNodeId } from '@xyflow/react'
 import clsx from 'clsx'
 import _ from 'lodash'
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import NODE_CONFIG, { type NODE_TYPES } from '../../nodes'
+import { useSetEdges } from '../../providers/NodeDataProviders'
 import type { IHandler } from '../../typescript/node'
 
 type NodeHandlers<T extends NODE_TYPES> = (typeof NODE_CONFIG)[T]['handlers']
 type NodeHandlerKey<T extends NODE_TYPES> = keyof NodeHandlers<T>
 
+type BaseProps = {
+  label?: string
+  children?: React.ReactNode
+}
+
+type NonDynamicColumn<T extends NODE_TYPES, K extends NodeHandlerKey<T>> = {
+  nodeType: T
+  handle: K
+} & BaseProps
+
+type DynamicColumn<T extends NODE_TYPES, K extends NodeHandlerKey<T>> = {
+  nodeType: T
+  handle: K
+  dynamicId: string
+} & BaseProps
+
 type NodeColumnProps<T extends NODE_TYPES> =
   | {
-      nodeType: T
-      handle: NodeHandlerKey<T>
-      label?: string
-      children?: React.ReactNode
-    }
-  | {
+      [K in NodeHandlerKey<T>]: NodeHandlers<T>[K] extends { dynamic: true }
+        ? DynamicColumn<T, K>
+        : NonDynamicColumn<T, K>
+    }[NodeHandlerKey<T>]
+  | ({
       nodeType?: never
       handle?: never
-      label: string
-      children?: React.ReactNode
-    }
+    } & BaseProps)
 
 function NodeColumn<T extends NODE_TYPES>({
   nodeType,
   handle,
   label,
-  children
+  children,
+  ...props
 }: NodeColumnProps<T>) {
+  const { t } = useTranslation('core.apiBuilder')
   const nodeId = useNodeId()
   const connections = useNodeConnections()
+  const setEdges = useSetEdges()
+  const dynamicId =
+    'dynamicId' in props ? (props.dynamicId as string) : undefined
 
   const handler = useMemo(() => {
     if (!nodeType || !handle) return undefined
@@ -66,7 +85,23 @@ function NodeColumn<T extends NODE_TYPES>({
     return filteredConnections.length < handler.cardinality
   }, [handler, filteredConnections.length])
 
-  const { t } = useTranslation('core.apiBuilder')
+  useEffect(() => {
+    return () => {
+      if (dynamicId && handle) {
+        const handleId = (handle as string) + '||' + dynamicId
+
+        setEdges(prevEdges =>
+          prevEdges.filter(
+            edge =>
+              edge.sourceHandle !== handleId &&
+              edge.targetHandle !== handleId &&
+              edge.source !== nodeId &&
+              edge.target !== nodeId
+          )
+        )
+      }
+    }
+  }, [])
 
   if (!handler?.label && !label) {
     return <></>
@@ -95,20 +130,21 @@ function NodeColumn<T extends NODE_TYPES>({
                 label
               ]
             : [])
-        ])}
+        ])}{' '}
+        {dynamicId ? `(${dynamicId})` : ''}
       </label>
       {children && <div>{children}</div>}
       {handler && handle && (
         <Handle
           type={isInput ? 'target' : 'source'}
           position={isInput ? Position.Left : Position.Right}
-          id={handle as string}
+          id={(handle as string) + (dynamicId ? `||${dynamicId}` : '')}
           className={clsx(
             'border-bg-200 dark:border-bg-900 top-2.5! size-3! rounded-full border',
             isInput ? 'right-auto! -left-3!' : '-right-3!'
           )}
           isConnectable={isConnectable}
-          style={{ backgroundColor: NODE_CONFIG[handler.nodeType].color }}
+          style={{ backgroundColor: NODE_CONFIG[handler.nodeType]?.color }}
         />
       )}
     </div>

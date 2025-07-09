@@ -76,7 +76,7 @@ export default function EditSchemaNodeModal({
         {draft.fields.map((f, i) => (
           <div
             key={i}
-            className="border-bg-700 shadow-custom flex items-center gap-3 rounded-lg border-[1.8px] p-4"
+            className="border-bg-200 dark:border-bg-700 shadow-custom flex items-center gap-3 rounded-lg border-[1.8px] p-4"
           >
             <div className="w-full space-y-3">
               <div className="flex items-center gap-3">

@@ -65,10 +65,10 @@ export const isValidConnection = (
   if (!tgtCfg || !srcCfg) return false
 
   const tgtHandler = tgtCfg.handlers[
-    connection.targetHandle as keyof typeof tgtCfg.handlers
+    connection.targetHandle.split('||')[0] as keyof typeof tgtCfg.handlers
   ] as IHandler
   const srcHandler = srcCfg.handlers[
-    connection.sourceHandle as keyof typeof srcCfg.handlers
+    connection.sourceHandle.split('||')[0] as keyof typeof srcCfg.handlers
   ] as IHandler
   if (!tgtHandler || !srcHandler) return false
 

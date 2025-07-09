@@ -42,7 +42,8 @@ function FlowEditor() {
     <NodeDataContext
       value={{
         updateNodeData: flowState.updateNodeData,
-        getNodeData: flowState.getNodeData
+        getNodeData: flowState.getNodeData,
+        setEdges: flowState.setEdges
       }}
     >
       <div className="bg-bg-100 dark:bg-bg-950 h-screen w-screen">

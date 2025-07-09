@@ -2,9 +2,7 @@ import type { INodeConfig } from '../typescript/node'
 import collection from './CollectionNode/config'
 import collectionPickFields from './CollectionPickFieldsNode/config'
 import controller from './ControllerNode/config'
-import databaseCRUDAction from './DatabaseCRUDAction/config'
-import filter from './FilterNode/config'
-import getFullList from './GetFullListNode/config'
+import createRecord from './CreateRecordNode/config'
 import requestSchema from './RequestSchemaNode/config'
 import route from './RouteNode/config'
 import router from './RouterNode/config'
@@ -12,19 +10,12 @@ import schemaArray from './SchemaArrayNode/config'
 import schema from './SchemaNode/config'
 import schemaPickFields from './SchemaPickFieldsNode/config'
 import service from './ServiceNode/config'
-import sorter from './SorterNode/config'
-import valueFromRequest from './ValueFromRequestNode/config'
-import value from './ValueNode/config'
 import schemaWithPB from './WithPBNode/config'
 
 export type NODE_TYPES =
   | 'collection'
-  | 'filter'
-  | 'sorter'
   | 'collectionPickFields'
-  | 'getFullList'
-  | 'value'
-  | 'valueFromRequest'
+  | 'createRecord'
   | 'schema'
   | 'schemaWithPB'
   | 'requestSchema'
@@ -34,16 +25,11 @@ export type NODE_TYPES =
   | 'route'
   | 'controller'
   | 'service'
-  | 'databaseCRUDAction'
 
 const NODE_CONFIG = {
   collection,
-  filter,
-  sorter,
   collectionPickFields,
-  getFullList,
-  value,
-  valueFromRequest,
+  createRecord,
   schema,
   schemaWithPB,
   requestSchema,
@@ -52,8 +38,7 @@ const NODE_CONFIG = {
   router,
   route,
   controller,
-  service,
-  databaseCRUDAction
+  service
 } as const satisfies Record<NODE_TYPES, INodeConfig<any, any>>
 
 const NODES_CATEGORIES: {
@@ -62,17 +47,7 @@ const NODES_CATEGORIES: {
 }[] = [
   {
     name: 'Database',
-    nodes: [
-      'collection',
-      'filter',
-      'sorter',
-      'collectionPickFields',
-      'getFullList'
-    ]
-  },
-  {
-    name: 'Variables',
-    nodes: ['value', 'valueFromRequest']
+    nodes: ['collection', 'collectionPickFields', 'createRecord']
   },
   {
     name: 'Schema',
@@ -90,7 +65,7 @@ const NODES_CATEGORIES: {
   },
   {
     name: 'Action',
-    nodes: ['controller', 'service', 'databaseCRUDAction']
+    nodes: ['controller', 'service']
   }
 ]
 
