@@ -4,7 +4,7 @@ import NodeColumn from '../../components/Node/NodeColumn'
 import NodeColumnWrapper from '../../components/Node/NodeColumnWrapper'
 import NodeListbox from '../../components/Node/NodeListbox'
 import NodeListboxOption from '../../components/Node/NodeListboxOption'
-import NodeTextInput from '../../components/NodeTextInput'
+import NodeTextInput from '../../components/Node/NodeTextInput'
 import {
   useNodeData,
   useUpdateNodeData

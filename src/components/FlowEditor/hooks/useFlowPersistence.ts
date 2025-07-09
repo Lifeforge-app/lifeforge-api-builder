@@ -1,4 +1,4 @@
-import type { Node } from '@xyflow/react'
+import { type Node } from '@xyflow/react'
 import { useEffect } from 'react'
 
 import type { FlowStateActions } from './useFlowState'

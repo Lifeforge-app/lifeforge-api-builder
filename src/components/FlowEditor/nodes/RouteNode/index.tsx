@@ -2,7 +2,7 @@ import NodeColumn from '../../components/Node/NodeColumn'
 import NodeColumnWrapper from '../../components/Node/NodeColumnWrapper'
 import NodeListbox from '../../components/Node/NodeListbox'
 import NodeListboxOption from '../../components/Node/NodeListboxOption'
-import NodeTextInput from '../../components/NodeTextInput'
+import NodeTextInput from '../../components/Node/NodeTextInput'
 import {
   useNodeData,
   useUpdateNodeData
@@ -33,15 +33,17 @@ function RouteNode({ id }: { id: string }) {
             </span>
           }
         >
-          {Object.entries(METHOD_COLORS).map(([method, color]) => (
-            <NodeListboxOption key={method} value={method}>
-              <span
-                className="size-2 rounded-full"
-                style={{
-                  backgroundColor: color[500] || '#ccc'
-                }}
-              />
-              {method}
+          {Object.entries(METHOD_COLORS).map(([m, color]) => (
+            <NodeListboxOption key={m} value={m} isSelected={m === method}>
+              <div className="flex items-center gap-2">
+                <span
+                  className="size-2 rounded-full"
+                  style={{
+                    backgroundColor: color[500] || '#ccc'
+                  }}
+                />
+                {m}
+              </div>
             </NodeListboxOption>
           ))}
         </NodeListbox>

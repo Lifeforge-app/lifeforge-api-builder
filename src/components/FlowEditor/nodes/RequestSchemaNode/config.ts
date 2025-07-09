@@ -10,7 +10,7 @@ export default defineNodeConfig()({
   color: colors.indigo[500],
   handlers: {
     'params-schema-input': {
-      label: 'Params Schema',
+      label: 'Params',
       nodeType: 'schema',
       cardinality: 1,
       filter: {
@@ -18,7 +18,7 @@ export default defineNodeConfig()({
       }
     },
     'query-schema-input': {
-      label: 'Query Schema',
+      label: 'Query',
       nodeType: 'schema',
       cardinality: 1,
       filter: {
@@ -27,7 +27,7 @@ export default defineNodeConfig()({
       optional: true
     },
     'body-schema-input': {
-      label: 'Body Schema',
+      label: 'Body',
       nodeType: 'schema',
       cardinality: 1,
       filter: {
@@ -38,7 +38,7 @@ export default defineNodeConfig()({
     'request-schema-output': {
       label: 'Request Schema',
       nodeType: 'requestSchema',
-      cardinality: 1,
+      cardinality: 'many',
       filter: {
         handler: ['request-schema-input']
       },

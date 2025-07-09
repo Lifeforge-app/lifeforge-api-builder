@@ -12,8 +12,8 @@ import {
 import '@xyflow/react/dist/style.css'
 
 import usePersonalization from '../../providers/PersonalizationProvider/usePersonalization'
-import ConnectionLine from './components/ConnectionLine'
-import { default as EdgeComponent } from './components/Edge'
+import ConnectionLine from './components/Flow/ConnectionLine'
+import { default as EdgeComponent } from './components/Flow/Edge'
 import { SaveButton } from './components/SaveButton'
 import { useFlowKeyboardHandlers } from './hooks/useFlowKeyboardHandlers'
 import { useFlowPersistence } from './hooks/useFlowPersistence'

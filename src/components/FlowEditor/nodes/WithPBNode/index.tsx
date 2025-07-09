@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 
 import NodeColumn from '../../components/Node/NodeColumn'
 import NodeColumnWrapper from '../../components/Node/NodeColumnWrapper'
-import NodeTextInput from '../../components/NodeTextInput'
+import NodeTextInput from '../../components/Node/NodeTextInput'
 import {
   useGetNodeData,
   useNodeData,

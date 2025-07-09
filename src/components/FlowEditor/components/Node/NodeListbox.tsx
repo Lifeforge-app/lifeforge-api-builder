@@ -30,8 +30,8 @@ function NodeListbox({
 
   return (
     <Listbox multiple={multiple} value={value} onChange={setValue}>
-      <ListboxButton className="border-bg-200 dark:border-bg-800 component-bg-lighter flex-between h-10 w-full rounded-md border pr-2 pl-3">
-        <div className="w-full min-w-0 truncate text-left">
+      <ListboxButton className="border-bg-200 dark:border-bg-800 component-bg-lighter flex-between h-10 w-full gap-3 rounded-md border pr-2 pl-3">
+        <div className="text-bg-600 dark:text-bg-400 w-full min-w-0 truncate text-left">
           {value.length === 0 ? (
             <span className="text-bg-400 dark:text-bg-600">
               {t('empty.pleaseSelect')}

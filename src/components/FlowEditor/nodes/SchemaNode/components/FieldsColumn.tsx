@@ -7,6 +7,10 @@ import NodeColumnValueWrapper from '../../../components/Node/NodeColumnValueWrap
 import FIELD_TYPES from '../constants/field_types'
 import type { ISchemaField } from '../types'
 
+function NodeFragment({ children }: { children: React.ReactNode }) {
+  return <Fragment>{children}</Fragment>
+}
+
 function FieldsColumn({
   fields,
   withLabel = true,
@@ -17,7 +21,7 @@ function FieldsColumn({
   withEmptyMessage?: boolean
 }) {
   const { t } = useTranslation('core.apiBuilder')
-  const FinalComponent = withLabel ? NodeColumn : Fragment
+  const FinalComponent = withLabel ? NodeColumn : NodeFragment
 
   return (
     <FinalComponent label="Fields">
@@ -36,7 +40,7 @@ function FieldsColumn({
                     />
                     {f.name}
                   </span>
-                  <span className="text-bg-400">
+                  <span className="text-bg-500">
                     {f.type}
                     {f.isOptional ? '?' : ''}
                   </span>

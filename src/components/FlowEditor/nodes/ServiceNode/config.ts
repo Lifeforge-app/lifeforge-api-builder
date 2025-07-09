@@ -12,7 +12,7 @@ export default defineNodeConfig()({
     'controller-input': {
       label: 'Controller',
       nodeType: 'controller',
-      cardinality: 'many',
+      cardinality: 1,
       filter: {
         handler: ['controller-output']
       }

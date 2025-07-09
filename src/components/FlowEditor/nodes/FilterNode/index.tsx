@@ -1,8 +1,9 @@
-import { useEdges, useNodeConnections, useNodes } from '@xyflow/react'
+import { useEdges, useNodes } from '@xyflow/react'
 import { useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import NodeColumn from '../../components/Node/NodeColumn'
+import NodeColumnValueWrapper from '../../components/Node/NodeColumnValueWrapper'
 import NodeColumnWrapper from '../../components/Node/NodeColumnWrapper'
 import NodeListbox from '../../components/Node/NodeListbox'
 import NodeListboxOption from '../../components/Node/NodeListboxOption'
@@ -13,6 +14,7 @@ import {
 } from '../../providers/NodeDataProviders'
 import { traverseGraph } from '../../utils/traverseGraph'
 import type { ICollectionNodeData } from '../CollectionNode/types'
+import type { IValueFromRequestNodeData } from '../ValueFromRequestNode/types'
 import type { IFilterNodeData } from './types'
 
 const OPERATIONS = [
@@ -33,23 +35,19 @@ function FilterNode({ id }: { id: string }) {
   const updateNode = useUpdateNodeData()
   const allNodes = useNodes()
   const allEdges = useEdges()
-  const connections = useNodeConnections()
-  const outputConnections = useMemo(
-    () =>
-      connections.filter(
-        conn => conn.sourceHandle === 'filter-output' && conn.source === id
-      ),
-    [connections, id]
-  )
 
   const targetCollection = useMemo(() => {
-    if (outputConnections.length === 0) return null
-    const startId = outputConnections[0].target
-
-    return traverseGraph(allNodes, allEdges, startId, [
-      { dir: 'in', type: 'collection' }
+    return traverseGraph(allNodes, allEdges, id, [
+      { dir: 'out', id: 'filter-output' },
+      { dir: 'in', id: 'collection-input' }
     ])
-  }, [outputConnections, allNodes, allEdges])
+  }, [allNodes, allEdges, id])
+
+  const targetValueNode = useMemo(() => {
+    return traverseGraph(allNodes, allEdges, id, [
+      { dir: 'in', id: 'value-input' }
+    ])
+  }, [allNodes, allEdges, id])
 
   const selectableColumns = useMemo(() => {
     if (!targetCollection) return []
@@ -57,8 +55,27 @@ function FilterNode({ id }: { id: string }) {
     const collectionNodeData = getNodeData<ICollectionNodeData>(
       targetCollection.id
     )
-    return collectionNodeData.fields
+    return collectionNodeData.fields ?? []
   }, [targetCollection, getNodeData])
+
+  const targetValueNodeData = useMemo(() => {
+    if (!targetValueNode) return null
+
+    if (targetValueNode.type === 'valueFromRequest') {
+      const data = getNodeData<IValueFromRequestNodeData>(targetValueNode.id)
+      return {
+        type: 'valueFromRequest',
+        requestType: data.requestType,
+        field: data.field
+      }
+    }
+
+    if (targetValueNode.type === 'value') {
+      //TODO
+    }
+
+    return null
+  }, [targetValueNode, getNodeData])
 
   useEffect(() => {
     if (!targetCollection) {
@@ -77,7 +94,11 @@ function FilterNode({ id }: { id: string }) {
               setValue={value => updateNode(id, { columnName: value })}
             >
               {selectableColumns.map(field => (
-                <NodeListboxOption key={field.name} value={field.name}>
+                <NodeListboxOption
+                  key={field.name}
+                  value={field.name}
+                  isSelected={field.name === columnName}
+                >
                   {field.name}
                 </NodeListboxOption>
               ))}
@@ -95,7 +116,11 @@ function FilterNode({ id }: { id: string }) {
               }
             >
               {OPERATIONS.map(op => (
-                <NodeListboxOption key={op.value} value={op.value}>
+                <NodeListboxOption
+                  key={op.value}
+                  value={op.value}
+                  isSelected={op.value === comparator}
+                >
                   <span className="whitespace-nowrap">
                     {op.label} ({op.value})
                   </span>
@@ -109,7 +134,28 @@ function FilterNode({ id }: { id: string }) {
           {t('empty.noCollectionConnected')}
         </p>
       )}
-      <NodeColumn nodeType="filter" handle="value-input" />
+      <NodeColumn nodeType="filter" handle="value-input">
+        {targetValueNodeData ? (
+          <NodeColumnValueWrapper>
+            {targetValueNodeData.type === 'valueFromRequest' && (
+              <span className="flex-between w-full gap-3">
+                <span className="truncate">
+                  {targetValueNodeData.field || 'No Field Selected'}
+                </span>
+                <span className="text-bg-500 text-sm">
+                  {targetValueNodeData.requestType
+                    ? `(${targetValueNodeData.requestType})`
+                    : ''}
+                </span>
+              </span>
+            )}
+          </NodeColumnValueWrapper>
+        ) : (
+          <p className="text-bg-500 text-center">
+            {t('empty.noValueConnected')}
+          </p>
+        )}
+      </NodeColumn>
       <NodeColumn nodeType="filter" handle="filter-output" />
     </NodeColumnWrapper>
   )

@@ -1,4 +1,4 @@
-import NodeColumnValueWrapper from './Node/NodeColumnValueWrapper'
+import NodeColumnValueWrapper from './NodeColumnValueWrapper'
 
 function NodeTextInput({
   value,

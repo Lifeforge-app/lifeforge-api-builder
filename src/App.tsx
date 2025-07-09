@@ -19,7 +19,7 @@ function App() {
     bgTemp: string
     language: string
   }>({
-    fontFamily: 'Urbanist',
+    fontFamily: 'Onest',
     theme: 'system',
     rawThemeColor: 'theme-lime',
     bgTemp: 'bg-zinc',
@@ -63,7 +63,7 @@ function App() {
       const { userData } = data.data
 
       setThemeConfig({
-        fontFamily: userData.fontFamily || 'Urbanist',
+        fontFamily: userData.fontFamily || 'Onest',
         theme: userData.theme || 'system',
         rawThemeColor:
           (userData.color.startsWith('#')

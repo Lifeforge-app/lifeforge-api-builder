@@ -24,7 +24,7 @@ function useFontFamily(fontFamily: string) {
         )
 
         if (!data.enabled) {
-          document.body.style.fontFamily = 'Urbanist, sans-serif'
+          document.body.style.fontFamily = 'Onest, sans-serif'
           return
         }
 

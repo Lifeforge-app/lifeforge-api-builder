@@ -1,6 +1,5 @@
 import { Icon } from '@iconify/react/dist/iconify.js'
 import { useNodeConnections } from '@xyflow/react'
-import clsx from 'clsx'
 import { useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -76,28 +75,21 @@ function SchemaPickFieldsNode({ id }: { id: string }) {
               }
             >
               {inputSchemaData.fields.map(field => (
-                <NodeListboxOption key={field.name} value={field.name}>
-                  <div
-                    className={clsx(
-                      'flex-between flex w-full',
-                      fieldIds.includes(field.name) &&
-                        'text-bg-900 dark:text-bg-100'
-                    )}
-                  >
-                    <div className="flex items-center gap-2">
-                      <Icon
-                        icon={
-                          FIELD_TYPES.find(
-                            t => t.label.toLowerCase() === field.type
-                          )?.icon || 'tabler:abc'
-                        }
-                        className="text-bg-500 size-4"
-                      />
-                      {field.name}
-                    </div>
-                    {fieldIds.includes(field.name) && (
-                      <Icon icon="tabler:check" />
-                    )}
+                <NodeListboxOption
+                  key={field.name}
+                  value={field.name}
+                  isSelected={fieldIds.includes(field.name)}
+                >
+                  <div className="flex items-center gap-2">
+                    <Icon
+                      icon={
+                        FIELD_TYPES.find(
+                          t => t.label.toLowerCase() === field.type
+                        )?.icon || 'tabler:abc'
+                      }
+                      className="text-bg-500 size-4"
+                    />
+                    {field.name}
                   </div>
                 </NodeListboxOption>
               ))}

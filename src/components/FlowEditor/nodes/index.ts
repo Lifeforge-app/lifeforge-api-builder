@@ -13,6 +13,7 @@ import schema from './SchemaNode/config'
 import schemaPickFields from './SchemaPickFieldsNode/config'
 import service from './ServiceNode/config'
 import sorter from './SorterNode/config'
+import valueFromRequest from './ValueFromRequestNode/config'
 import value from './ValueNode/config'
 import schemaWithPB from './WithPBNode/config'
 
@@ -23,6 +24,7 @@ export type NODE_TYPES =
   | 'collectionPickFields'
   | 'getFullList'
   | 'value'
+  | 'valueFromRequest'
   | 'schema'
   | 'schemaWithPB'
   | 'requestSchema'
@@ -41,6 +43,7 @@ const NODE_CONFIG = {
   collectionPickFields,
   getFullList,
   value,
+  valueFromRequest,
   schema,
   schemaWithPB,
   requestSchema,
@@ -69,7 +72,7 @@ const NODES_CATEGORIES: {
   },
   {
     name: 'Variables',
-    nodes: ['value']
+    nodes: ['value', 'valueFromRequest']
   },
   {
     name: 'Schema',
