@@ -1,5 +1,5 @@
 export interface ICollectionPickFieldsNodeData {
-  fieldIds: []
+  fieldIds: string[]
   fields: {
     name: string
     type: string

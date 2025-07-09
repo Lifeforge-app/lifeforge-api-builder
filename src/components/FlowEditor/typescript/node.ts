@@ -12,6 +12,7 @@ export interface IHandler {
     node?: NODE_TYPES[]
   }
   dynamic?: boolean
+  isWayToController?: boolean
 }
 
 export type INodeConfig<

@@ -10,6 +10,7 @@ export default defineNodeConfig<ICollectionPickFieldsNodeData>()({
   component: CollectionPickFieldsNode,
   color: colors.purple[500],
   data: {
+    fieldIds: [],
     fields: []
   },
   handlers: {

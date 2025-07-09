@@ -1,10 +1,16 @@
 import { type Edge, type Node, getIncomers, getOutgoers } from '@xyflow/react'
 
+import NODE_CONFIG from '../nodes'
+// 你自己定义的 NODE_CONFIG
+import type { NODE_TYPES } from '../nodes'
+import type { IHandler } from '../typescript/node'
+
 export function findNodeTypeInGraph(
   nodes: Node[],
   edges: Edge[],
   startNodeId: string,
-  targetType: string
+  targetType: string,
+  useWayToController = false
 ): Node | null {
   const startNode = nodes.find(node => node.id === startNodeId)
   if (!startNode) return null
@@ -16,23 +22,67 @@ export function findNodeTypeInGraph(
   visited.add(startNode.id)
 
   while (queue.length > 0) {
-    const currentNode = queue.shift()!
-
-    const connectedNodes = [
-      ...getIncomers(currentNode, nodes, edges),
-      ...getOutgoers(currentNode, nodes, edges)
+    const current = queue.shift()!
+    const neighbors = [
+      ...getIncomers(current, nodes, edges),
+      ...getOutgoers(current, nodes, edges)
     ]
 
-    for (const connectedNode of connectedNodes) {
-      if (visited.has(connectedNode.id)) continue
+    for (const neighbor of neighbors) {
+      if (visited.has(neighbor.id)) continue
 
-      visited.add(connectedNode.id)
+      const connections = edges.filter(
+        edge =>
+          (edge.source === current.id && edge.target === neighbor.id) ||
+          (edge.target === current.id && edge.source === neighbor.id)
+      )
 
-      if (connectedNode.type === targetType) {
-        return connectedNode
+      const hasValidConnection = connections.some(edge => {
+        const fromNode = nodes.find(n => n.id === edge.source)
+        const toNode = nodes.find(n => n.id === edge.target)
+        if (!fromNode || !toNode) return false
+
+        const fromHandlers =
+          NODE_CONFIG[fromNode.type as NODE_TYPES]?.handlers ?? {}
+        const toHandlers =
+          NODE_CONFIG[toNode.type as NODE_TYPES]?.handlers ?? {}
+
+        const fromHandler = edge.sourceHandle
+          ? (fromHandlers[
+              edge.sourceHandle.split('||')[0] as keyof typeof fromHandlers
+            ] as IHandler)
+          : undefined
+        const toHandler = edge.targetHandle
+          ? (toHandlers[
+              edge.targetHandle.split('||')[0] as keyof typeof toHandlers
+            ] as IHandler)
+          : undefined
+
+        if (!useWayToController) {
+          return true
+        }
+        console.log(
+          fromHandler,
+          fromHandler?.isWayToController,
+          toHandler,
+          toHandler?.isWayToController
+        )
+
+        return (
+          (fromHandler?.isWayToController ?? false) &&
+          (toHandler?.isWayToController ?? false)
+        )
+      })
+
+      if (!hasValidConnection) continue
+
+      visited.add(neighbor.id)
+
+      if (neighbor.type === targetType) {
+        return neighbor
       }
 
-      queue.push(connectedNode)
+      queue.push(neighbor)
     }
   }
 

@@ -1,10 +1,7 @@
-import { Icon } from '@iconify/react/dist/iconify.js'
 import { useTranslation } from 'react-i18next'
 import { Fragment } from 'react/jsx-runtime'
 
 import NodeColumn from '../../../components/Node/NodeColumn'
-import NodeColumnValueWrapper from '../../../components/Node/NodeColumnValueWrapper'
-import FIELD_TYPES from '../constants/field_types'
 import type { ISchemaField } from '../types'
 import FieldColumn from './FieldColumn'
 
