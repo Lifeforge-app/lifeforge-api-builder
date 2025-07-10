@@ -1,12 +1,12 @@
 import colors from 'tailwindcss/colors'
 
-import CreateRecordNode from '.'
+import DeleteRecordNode from '.'
 import defineNodeConfig from '../../utils/defineConfig'
 
 export default defineNodeConfig()({
-  name: 'Create Record',
-  icon: 'tabler:plus',
-  component: CreateRecordNode,
+  name: 'Delete Record',
+  icon: 'tabler:trash',
+  component: DeleteRecordNode,
   color: colors.sky[500],
   handlers: {
     'collection-input': {
@@ -17,9 +17,8 @@ export default defineNodeConfig()({
         handler: ['collection-output']
       }
     },
-    'field-value-input': {
-      dynamic: true,
-      label: 'Value',
+    'id-input': {
+      label: 'Record ID',
       nodeType: 'value',
       cardinality: 1,
       filter: {
@@ -29,7 +28,7 @@ export default defineNodeConfig()({
     },
     'db-operation-output': {
       label: 'Database Action',
-      nodeType: 'createRecord',
+      nodeType: 'deleteRecord',
       cardinality: 1,
       filter: {
         handler: ['db-operation-input']
@@ -37,4 +36,4 @@ export default defineNodeConfig()({
       isWayToController: true
     }
   }
-})
+} as const)

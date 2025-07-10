@@ -41,7 +41,8 @@ export default defineNodeConfig()({
       cardinality: 1,
       filter: {
         handler: ['controller-input']
-      }
+      },
+      isWayToController: true
     }
   }
 } as const)

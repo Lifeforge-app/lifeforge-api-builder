@@ -20,7 +20,7 @@ export default defineNodeConfig<IPickFieldsFromSchemaNodeData>()({
       cardinality: 1,
       filter: {
         handler: ['schema-output'],
-        node: ['schema', 'schemaWithPB']
+        node: ['schema', 'schemaWithPB', 'deriveSchemaFromCollection']
       }
     },
     'schema-output': {

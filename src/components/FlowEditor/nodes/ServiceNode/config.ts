@@ -15,7 +15,17 @@ export default defineNodeConfig()({
       cardinality: 1,
       filter: {
         handler: ['controller-output']
-      }
+      },
+      isWayToController: true
+    },
+    'action-input': {
+      label: 'Action',
+      nodeType: 'databaseCRUDAction',
+      cardinality: 1,
+      filter: {
+        handler: ['action-output']
+      },
+      isWayToController: true
     }
   }
 } as const)

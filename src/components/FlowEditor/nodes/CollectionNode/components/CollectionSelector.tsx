@@ -46,7 +46,9 @@ function CollectionSelector({
                       fields: [
                         {
                           name: 'id',
-                          type: 'string'
+                          type: 'text',
+                          optional: false,
+                          values: []
                         },
                         ...collection.fields
                       ]

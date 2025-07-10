@@ -2,14 +2,17 @@ import colors from 'tailwindcss/colors'
 
 import DeriveSchemaFromCollectionNode from '.'
 import defineNodeConfig from '../../utils/defineConfig'
+import { type IDeriveSchemaFromCollectionNodeData } from './types'
 
-export default defineNodeConfig()({
+export default defineNodeConfig<IDeriveSchemaFromCollectionNodeData>()({
   name: 'Derive Schema From Collection',
   icon: 'tabler:database-export',
   component: DeriveSchemaFromCollectionNode,
   color: colors.blue[500],
   data: {
     collectionName: '',
+    name: '',
+    typescriptInterfaceName: '',
     fields: []
   },
   handlers: {
@@ -24,7 +27,7 @@ export default defineNodeConfig()({
     'schema-output': {
       label: 'Schema',
       nodeType: 'schema',
-      cardinality: 1,
+      cardinality: 'many',
       filter: {
         handler: ['schema-input']
       }

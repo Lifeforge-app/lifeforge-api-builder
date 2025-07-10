@@ -7,9 +7,9 @@ import NodeColumnWrapper from '../../components/Node/NodeColumnWrapper'
 import { useGetNodeData } from '../../providers/NodeDataProviders'
 import { traverseGraph } from '../../utils/traverseGraph'
 import type { ICollectionNodeData } from '../CollectionNode/types'
-import FieldValueColumn from './components/FieldValueColumn'
+import FieldValueColumn from '../CreateRecordNode/components/FieldValueColumn'
 
-function CreateRecordNode({ id }: { id: string }) {
+function UpdateRecordNode({ id }: { id: string }) {
   const { t } = useTranslation('core.apiBuilder')
   const getNodeData = useGetNodeData()
   const nodes = useNodes()
@@ -28,13 +28,13 @@ function CreateRecordNode({ id }: { id: string }) {
 
   return (
     <NodeColumnWrapper>
-      <NodeColumn nodeType="createRecord" handle="collection-input" />
+      <NodeColumn nodeType="updateRecord" handle="collection-input" />
       {targetCollection ? (
         targetFields.length > 0 ? (
           targetFields.map(field => (
             <NodeColumn
               key={field.name}
-              nodeType="createRecord"
+              nodeType="updateRecord"
               handle="field-value-input"
               dynamicId={field.name}
             >
@@ -49,9 +49,9 @@ function CreateRecordNode({ id }: { id: string }) {
           {t('empty.noCollectionConnected')}
         </p>
       )}
-      <NodeColumn nodeType="createRecord" handle="db-operation-output" />
+      <NodeColumn nodeType="updateRecord" handle="db-operation-output" />
     </NodeColumnWrapper>
   )
 }
 
-export default CreateRecordNode
+export default UpdateRecordNode

@@ -4,6 +4,7 @@ import collectionPickFields from './CollectionPickFieldsNode/config'
 import controller from './ControllerNode/config'
 import createRecord from './CreateRecordNode/config'
 import databaseCRUDAction from './DatabaseCRUDActionNode/config'
+import deleteRecord from './DeleteRecordNode/config'
 import deriveSchemaFromCollection from './DeriveSchemaFromCollectionNode/config'
 import filter from './FilterNode/config'
 import getFullList from './GetFullListNode/config'
@@ -15,6 +16,7 @@ import schema from './SchemaNode/config'
 import schemaPickFields from './SchemaPickFieldsNode/config'
 import service from './ServiceNode/config'
 import sorter from './SorterNode/config'
+import updateRecord from './UpdateRecordNode/config'
 import valueFromRequest from './ValueFromRequestNode/config'
 import value from './ValueNode/config'
 import schemaWithPB from './WithPBNode/config'
@@ -26,6 +28,8 @@ export type NODE_TYPES =
   | 'collectionPickFields'
   | 'getFullList'
   | 'createRecord'
+  | 'updateRecord'
+  | 'deleteRecord'
   | 'value'
   | 'valueFromRequest'
   | 'schema'
@@ -47,6 +51,8 @@ const NODE_CONFIG = {
   collectionPickFields,
   getFullList,
   createRecord,
+  updateRecord,
+  deleteRecord,
   value,
   valueFromRequest,
   schema,
@@ -74,7 +80,9 @@ const NODES_CATEGORIES: {
       'sorter',
       'collectionPickFields',
       'getFullList',
-      'createRecord'
+      'createRecord',
+      'updateRecord',
+      'deleteRecord'
     ]
   },
   {

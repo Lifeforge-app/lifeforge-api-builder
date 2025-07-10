@@ -16,7 +16,9 @@ import type { ISchemaField, ISchemaNodeData } from '../SchemaNode/types'
 const PB_SCHEMA: ISchemaField[] = [
   { name: 'id', type: 'string', isOptional: false },
   { name: 'collectionId', type: 'string', isOptional: false },
-  { name: 'collectionName', type: 'string', isOptional: false }
+  { name: 'collectionName', type: 'string', isOptional: false },
+  { name: 'created', type: 'string', isOptional: false },
+  { name: 'updated', type: 'string', isOptional: false }
 ]
 
 function WithPBNode({ id }: { id: string }) {
@@ -43,8 +45,8 @@ function WithPBNode({ id }: { id: string }) {
       updateNode(id, { fields: [], name: '' })
     } else {
       updateNode(id, {
-        name: `${inputSchemaData.name || 'Schema'}WithPB`,
-        fields: [...inputSchemaData.fields, ...PB_SCHEMA]
+        name: `${inputSchemaData.name || 'Schema'}`,
+        fields: [...PB_SCHEMA, ...inputSchemaData.fields]
       })
     }
   }, [inputSchemaData, id, updateNode])

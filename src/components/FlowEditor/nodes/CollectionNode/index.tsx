@@ -23,11 +23,7 @@ function CollectionNode({ id }: { id: string }) {
           <Button
             onClick={() => {
               open(CollectionSelector, {
-                onSelect: (selectedCollection: {
-                  name: string
-                  type: 'base' | 'view'
-                  fields: { name: string; type: string }[]
-                }) => {
+                onSelect: (selectedCollection: ICollectionNodeData) => {
                   updateNode(id, selectedCollection)
                 }
               })
@@ -59,7 +55,10 @@ function CollectionNode({ id }: { id: string }) {
                 <span className="text-bg-600 dark:text-bg-400 truncate">
                   {field.name}
                 </span>
-                <span className="text-bg-500">{field.type}</span>
+                <span className="text-bg-500">
+                  {field.type}
+                  {field.optional && '?'}
+                </span>
               </div>
             ))}
           </div>

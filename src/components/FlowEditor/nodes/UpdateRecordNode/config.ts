@@ -1,12 +1,12 @@
 import colors from 'tailwindcss/colors'
 
-import CreateRecordNode from '.'
+import UpdateRecordNode from '.'
 import defineNodeConfig from '../../utils/defineConfig'
 
 export default defineNodeConfig()({
-  name: 'Create Record',
-  icon: 'tabler:plus',
-  component: CreateRecordNode,
+  name: 'Update Record',
+  icon: 'tabler:pencil',
+  component: UpdateRecordNode,
   color: colors.sky[500],
   handlers: {
     'collection-input': {
@@ -29,7 +29,7 @@ export default defineNodeConfig()({
     },
     'db-operation-output': {
       label: 'Database Action',
-      nodeType: 'createRecord',
+      nodeType: 'updateRecord',
       cardinality: 1,
       filter: {
         handler: ['db-operation-input']
@@ -37,4 +37,4 @@ export default defineNodeConfig()({
       isWayToController: true
     }
   }
-})
+} as const)
