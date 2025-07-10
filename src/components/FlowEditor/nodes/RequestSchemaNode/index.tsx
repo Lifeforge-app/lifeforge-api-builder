@@ -3,12 +3,12 @@ import { useMemo } from 'react'
 
 import NodeColumn from '../../components/Node/NodeColumn'
 import NodeColumnWrapper from '../../components/Node/NodeColumnWrapper'
-import { useGetNodeData } from '../../providers/NodeDataProviders'
+import { useFlowStateContext } from '../../hooks/useFlowStateContext'
 import FieldsColumn from '../SchemaNode/components/FieldsColumn'
 
 function RequestSchemaNode({ id }: { id: string }) {
   const connections = useNodeConnections()
-  const getNodeData = useGetNodeData()
+  const { getNodeData } = useFlowStateContext()
   const schemaInputConnections = useMemo(
     () =>
       connections.filter(

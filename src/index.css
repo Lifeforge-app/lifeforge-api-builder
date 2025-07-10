@@ -5,3 +5,8 @@ layer(base);
 @import './styles/index.css';
 @import '@lifeforge/ui/dist/index.css';
 @source "../node_modules/@lifeforge/ui/dist";
+
+.react-flow__node-group {
+  @apply border-none! bg-transparent! p-0! hover:shadow-none!;
+  box-shadow: none !important;
+}

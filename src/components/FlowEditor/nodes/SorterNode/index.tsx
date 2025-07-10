@@ -7,11 +7,7 @@ import NodeColumn from '../../components/Node/NodeColumn'
 import NodeColumnWrapper from '../../components/Node/NodeColumnWrapper'
 import NodeListbox from '../../components/Node/NodeListbox'
 import NodeListboxOption from '../../components/Node/NodeListboxOption'
-import {
-  useGetNodeData,
-  useNodeData,
-  useUpdateNodeData
-} from '../../providers/NodeDataProviders'
+import { useFlowStateContext } from '../../hooks/useFlowStateContext'
 import { traverseGraph } from '../../utils/traverseGraph'
 import type { ICollectionNodeData } from '../CollectionNode/types'
 import type { ISorterNodeData } from './types'
@@ -23,9 +19,11 @@ const SORT_ORDER_OPTIONS = [
 
 function SorterNode({ id }: { id: string }) {
   const { t } = useTranslation('core.apiBuilder')
-  const getNodeData = useGetNodeData()
-  const { direction, field } = useNodeData<ISorterNodeData>(id)
-  const updateNode = useUpdateNodeData()
+  const { getNodeData, updateNodeData } = useFlowStateContext()
+  const { direction, field } = useMemo(
+    () => getNodeData<ISorterNodeData>(id),
+    [getNodeData, id]
+  )
   const allNodes = useNodes()
   const allEdges = useEdges()
 
@@ -47,9 +45,9 @@ function SorterNode({ id }: { id: string }) {
 
   useEffect(() => {
     if (!targetCollection) {
-      updateNode(id, { field: '', direction: 'asc' })
+      updateNodeData(id, { field: '', direction: 'asc' })
     }
-  }, [targetCollection, id, updateNode])
+  }, [targetCollection, id, updateNodeData])
 
   return (
     <NodeColumnWrapper>
@@ -58,7 +56,7 @@ function SorterNode({ id }: { id: string }) {
           <NodeColumn label="Field">
             <NodeListbox
               value={field}
-              setValue={value => updateNode(id, { field: value })}
+              setValue={value => updateNodeData(id, { field: value })}
             >
               {selectableColumns.map(f => (
                 <NodeListboxOption
@@ -74,7 +72,7 @@ function SorterNode({ id }: { id: string }) {
           <NodeColumn label="Direction">
             <NodeListbox
               value={direction}
-              setValue={value => updateNode(id, { direction: value })}
+              setValue={value => updateNodeData(id, { direction: value })}
               buttonContent={
                 <span className="flex items-center gap-2">
                   <Icon

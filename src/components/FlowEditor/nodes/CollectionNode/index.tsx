@@ -1,19 +1,20 @@
 import { Icon } from '@iconify/react/dist/iconify.js'
+import { useMemo } from 'react'
 
 import { Button, useModalStore } from '@lifeforge/ui'
 
 import NodeColumn from '../../components/Node/NodeColumn'
 import NodeColumnWrapper from '../../components/Node/NodeColumnWrapper'
-import {
-  useNodeData,
-  useUpdateNodeData
-} from '../../providers/NodeDataProviders'
+import { useFlowStateContext } from '../../hooks/useFlowStateContext'
 import CollectionSelector from './components/CollectionSelector'
 import type { ICollectionNodeData } from './types'
 
 function CollectionNode({ id }: { id: string }) {
-  const { name, type, fields } = useNodeData<ICollectionNodeData>(id)
-  const updateNode = useUpdateNodeData()
+  const { getNodeData, updateNodeData } = useFlowStateContext()
+  const { name, type, fields } = useMemo(() => {
+    return getNodeData<ICollectionNodeData>(id)
+  }, [getNodeData, id])
+
   const open = useModalStore(s => s.open)
 
   return (
@@ -24,7 +25,7 @@ function CollectionNode({ id }: { id: string }) {
             onClick={() => {
               open(CollectionSelector, {
                 onSelect: (selectedCollection: ICollectionNodeData) => {
-                  updateNode(id, selectedCollection)
+                  updateNodeData(id, selectedCollection)
                 }
               })
             }}

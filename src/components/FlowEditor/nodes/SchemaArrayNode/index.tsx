@@ -5,13 +5,13 @@ import { useTranslation } from 'react-i18next'
 import NodeColumn from '../../components/Node/NodeColumn'
 import NodeColumnValueWrapper from '../../components/Node/NodeColumnValueWrapper'
 import NodeColumnWrapper from '../../components/Node/NodeColumnWrapper'
-import { useGetNodeData } from '../../providers/NodeDataProviders'
+import { useFlowStateContext } from '../../hooks/useFlowStateContext'
 import { type ISchemaField } from '../SchemaNode/types'
 
 function SchemaArrayNode({ id }: { id: string }) {
   const { t } = useTranslation('core.apiBuilder')
   const connections = useNodeConnections()
-  const getNodeData = useGetNodeData()
+  const { getNodeData } = useFlowStateContext()
   const schemaInputConnections = connections.filter(
     connection =>
       connection.targetHandle === 'schema-input' && connection.target === id

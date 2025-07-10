@@ -1,7 +1,7 @@
 import { Icon } from '@iconify/react/dist/iconify.js'
 import { Suspense, useEffect, useState } from 'react'
 
-import { Button, LoadingScreen, ModalManager } from '@lifeforge/ui'
+import { Button, LoadingScreen } from '@lifeforge/ui'
 
 import FlowEditor from './components/FlowEditor'
 import Header from './components/Header'
@@ -131,7 +131,6 @@ function App() {
                 </>
               )}
             </Suspense>
-            <ModalManager />
           </main>
         </ToastProvider>
       </LifeforgeUIProviderWrapper>

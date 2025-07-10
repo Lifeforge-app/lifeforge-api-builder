@@ -1,18 +1,20 @@
+import { useMemo } from 'react'
+
 import NodeColumn from '../../components/Node/NodeColumn'
 import NodeColumnWrapper from '../../components/Node/NodeColumnWrapper'
 import NodeListbox from '../../components/Node/NodeListbox'
 import NodeListboxOption from '../../components/Node/NodeListboxOption'
 import NodeTextInput from '../../components/Node/NodeTextInput'
-import {
-  useNodeData,
-  useUpdateNodeData
-} from '../../providers/NodeDataProviders'
+import { useFlowStateContext } from '../../hooks/useFlowStateContext'
 import METHOD_COLORS from './constants/method_colors'
 import type { IRouteNodeData } from './types'
 
 function RouteNode({ id }: { id: string }) {
-  const { method, path } = useNodeData<IRouteNodeData>(id)
-  const updateNode = useUpdateNodeData()
+  const { getNodeData, updateNodeData } = useFlowStateContext()
+  const { method, path } = useMemo(
+    () => getNodeData<IRouteNodeData>(id),
+    [getNodeData, id]
+  )
 
   return (
     <NodeColumnWrapper>
@@ -20,7 +22,9 @@ function RouteNode({ id }: { id: string }) {
       <NodeColumn label="HTTP Method">
         <NodeListbox
           value={method}
-          setValue={value => updateNode(id, { method: value as typeof method })}
+          setValue={value =>
+            updateNodeData(id, { method: value as typeof method })
+          }
           buttonContent={
             <span className="text-bg-500 flex items-center gap-2 font-medium">
               <span
@@ -52,7 +56,7 @@ function RouteNode({ id }: { id: string }) {
         <NodeTextInput
           value={path}
           setValue={newValue => {
-            updateNode(id, { path: newValue })
+            updateNodeData(id, { path: newValue })
           }}
           placeholder="/route/path/:params"
         />

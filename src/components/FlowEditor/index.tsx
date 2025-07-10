@@ -11,15 +11,17 @@ import {
 
 import '@xyflow/react/dist/style.css'
 
+import { ModalManager } from '@lifeforge/ui'
+
 import usePersonalization from '../../providers/PersonalizationProvider/usePersonalization'
 import ConnectionLine from './components/Flow/ConnectionLine'
 import { default as EdgeComponent } from './components/Flow/Edge'
 import { SaveButton } from './components/SaveButton'
 import { useFlowKeyboardHandlers } from './hooks/useFlowKeyboardHandlers'
 import { useFlowPersistence } from './hooks/useFlowPersistence'
-import { useFlowState } from './hooks/useFlowState'
+import { useFlowStateContext } from './hooks/useFlowStateContext'
 import NODE_CONFIG, { type NODE_TYPES } from './nodes'
-import { NodeDataContext } from './providers/NodeDataProviders'
+import { FlowStateProvider } from './providers/FlowStateProvider'
 import { createNodeTypes } from './utils/createNodeTypes'
 import { isValidConnection } from './utils/isValidConnection'
 
@@ -27,25 +29,12 @@ const NODE_TYPES = createNodeTypes()
 
 function FlowEditor() {
   const { derivedTheme, bgTempPalette } = usePersonalization()
-  const flowState = useFlowState()
-  useFlowPersistence({
-    setNodes: flowState.setNodes,
-    setEdges: flowState.setEdges,
-    setNodeData: flowState.setNodeData
-  })
-
-  useFlowKeyboardHandlers({
-    onAddNode: flowState.onAddNode
-  })
+  const flowState = useFlowStateContext()
+  useFlowPersistence()
+  useFlowKeyboardHandlers()
 
   return (
-    <NodeDataContext
-      value={{
-        updateNodeData: flowState.updateNodeData,
-        getNodeData: flowState.getNodeData,
-        setEdges: flowState.setEdges
-      }}
-    >
+    flowState.ready && (
       <div className="bg-bg-100 dark:bg-bg-950 h-screen w-screen">
         <ReactFlow
           colorMode={derivedTheme}
@@ -65,6 +54,7 @@ function FlowEditor() {
           fitView
           snapToGrid
           snapGrid={[20, 20]}
+          minZoom={0.2}
         >
           <Background
             color={
@@ -76,7 +66,7 @@ function FlowEditor() {
           />
           <MiniMap
             nodeStrokeColor={(node: Node) =>
-              NODE_CONFIG[node.type as NODE_TYPES].color || bgTempPalette[500]
+              NODE_CONFIG[node.type as NODE_TYPES]?.color || bgTempPalette[500]
             }
             nodeStrokeWidth={5}
             nodeBorderRadius={6}
@@ -85,14 +75,17 @@ function FlowEditor() {
         </ReactFlow>
         <SaveButton nodeData={flowState.nodeData} />
       </div>
-    </NodeDataContext>
+    )
   )
 }
 
 function FlowEditorWrapper() {
   return (
     <ReactFlowProvider>
-      <FlowEditor />
+      <FlowStateProvider>
+        <FlowEditor />
+        <ModalManager />
+      </FlowStateProvider>
     </ReactFlowProvider>
   )
 }

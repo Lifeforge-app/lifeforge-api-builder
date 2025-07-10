@@ -2,7 +2,7 @@ import { useEdges, useNodeId, useNodes } from '@xyflow/react'
 import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { useGetNodeData } from '../../../providers/NodeDataProviders'
+import { useFlowStateContext } from '../../../hooks/useFlowStateContext'
 import { traverseGraph } from '../../../utils/traverseGraph'
 import FieldColumn from '../../SchemaNode/components/FieldColumn'
 import type { IValueFromRequestNodeData } from '../../ValueFromRequestNode/types'
@@ -12,7 +12,7 @@ function FieldValueColumn({ fieldId }: { fieldId: string }) {
   const nodes = useNodes()
   const edges = useEdges()
   const nodeId = useNodeId()
-  const getNodeData = useGetNodeData()
+  const { getNodeData } = useFlowStateContext()
 
   const targetValueNode = useMemo(() => {
     const targetNode = traverseGraph(nodes, edges, nodeId!, [

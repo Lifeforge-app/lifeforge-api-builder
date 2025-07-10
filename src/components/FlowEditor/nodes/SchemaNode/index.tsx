@@ -1,21 +1,23 @@
+import { useMemo } from 'react'
+
 import { useModalStore } from '@lifeforge/ui'
 
 import NodeColumn from '../../components/Node/NodeColumn'
 import NodeColumnWrapper from '../../components/Node/NodeColumnWrapper'
 import NodeConfigButton from '../../components/Node/NodeConfigButton'
 import NodeTextInput from '../../components/Node/NodeTextInput'
-import {
-  useNodeData,
-  useUpdateNodeData
-} from '../../providers/NodeDataProviders'
+import { useFlowStateContext } from '../../hooks/useFlowStateContext'
 import EditSchemaNodeModal from './components/EditSchemaBlockModal'
 import FieldsColumn from './components/FieldsColumn'
 import type { ISchemaNodeData } from './types'
 
 function SchemaNode({ id }: { id: string }) {
-  const data = useNodeData<ISchemaNodeData>(id)
+  const { getNodeData, updateNodeData } = useFlowStateContext()
+  const data = useMemo(
+    () => getNodeData<ISchemaNodeData>(id),
+    [getNodeData, id]
+  )
   const open = useModalStore(s => s.open)
-  const updateNode = useUpdateNodeData()
 
   return (
     <NodeColumnWrapper>
@@ -23,7 +25,7 @@ function SchemaNode({ id }: { id: string }) {
         onClick={() => {
           open(EditSchemaNodeModal, {
             schema: data,
-            onSave: updated => updateNode(id, updated)
+            onSave: updated => updateNodeData(id, updated)
           })
         }}
       />
@@ -31,7 +33,7 @@ function SchemaNode({ id }: { id: string }) {
         <NodeTextInput
           value={data.name}
           setValue={newValue => {
-            updateNode(id, { name: newValue })
+            updateNodeData(id, { name: newValue })
           }}
         />
       </NodeColumn>

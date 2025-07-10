@@ -15,13 +15,18 @@ export interface FlowState {
   nodes: Node[]
   edges: Edge[]
   nodeData: Record<string, any>
+  ready: boolean
 }
 
 export interface FlowStateActions {
   onNodesChange: (changes: NodeChange[]) => void
   onEdgesChange: (changes: EdgeChange[]) => void
   onConnect: (params: Connection) => void
-  onAddNode: (type: NODE_TYPES, position: { x: number; y: number }) => void
+  onAddNode: (
+    type: NODE_TYPES | 'group',
+    position: { x: number; y: number },
+    size?: { width: number; height: number }
+  ) => string
   getNodeData: <T extends Record<string, any>>(id: string) => T
   updateNodeData: <T extends Record<string, any>>(
     id: string,
@@ -30,12 +35,14 @@ export interface FlowStateActions {
   setNodes: React.Dispatch<React.SetStateAction<Node[]>>
   setEdges: React.Dispatch<React.SetStateAction<Edge[]>>
   setNodeData: React.Dispatch<React.SetStateAction<Record<string, any>>>
+  setReady: (ready: boolean) => void
 }
 
 export function useFlowState(): FlowState & FlowStateActions {
   const [nodes, setNodes] = useState<Node[]>([])
   const [edges, setEdges] = useState<Edge[]>([])
   const [nodeData, setNodeData] = useState<Record<string, any>>({})
+  const [ready, setReady] = useState(false)
 
   const onNodesChange = useCallback(
     (changes: NodeChange[]) => setNodes(nds => applyNodeChanges(changes, nds)),
@@ -52,7 +59,25 @@ export function useFlowState(): FlowState & FlowStateActions {
   }, [])
 
   const onAddNode = useCallback(
-    (type: NODE_TYPES, position: { x: number; y: number }) => {
+    (
+      type: NODE_TYPES | 'group',
+      position: { x: number; y: number },
+      size?: { width: number; height: number }
+    ) => {
+      if (type === 'group') {
+        const newNode: Node = {
+          id: `group-${uuidv4()}`,
+          type: 'group',
+          position,
+          data: {},
+          width: size?.width || 200,
+          height: size?.height || 100
+        }
+
+        setNodes(nds => nds.concat(newNode))
+        return newNode.id
+      }
+
       let data: Record<string, any> = {}
       if ('data' in NODE_CONFIG[type]) {
         data = NODE_CONFIG[type].data || {}
@@ -70,6 +95,8 @@ export function useFlowState(): FlowState & FlowStateActions {
         ...prevData,
         [newNode.id]: data
       }))
+
+      return newNode.id
     },
     []
   )
@@ -90,7 +117,7 @@ export function useFlowState(): FlowState & FlowStateActions {
         setNodeData(prevData => ({
           ...prevData,
           [id]: {
-            ...prevData[id],
+            ...(prevData[id] ?? {}),
             ...data(prevData[id])
           }
         }))
@@ -100,7 +127,7 @@ export function useFlowState(): FlowState & FlowStateActions {
       setNodeData(prevData => ({
         ...prevData,
         [id]: {
-          ...prevData[id],
+          ...(prevData[id] ?? {}),
           ...data
         }
       }))
@@ -112,6 +139,7 @@ export function useFlowState(): FlowState & FlowStateActions {
     nodes,
     edges,
     nodeData,
+    ready,
     onNodesChange,
     onEdgesChange,
     onConnect,
@@ -120,6 +148,7 @@ export function useFlowState(): FlowState & FlowStateActions {
     updateNodeData,
     setNodes,
     setEdges,
-    setNodeData
+    setNodeData,
+    setReady
   }
 }

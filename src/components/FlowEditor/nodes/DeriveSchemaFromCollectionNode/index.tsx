@@ -7,11 +7,7 @@ import { useTranslation } from 'react-i18next'
 import NodeColumn from '../../components/Node/NodeColumn'
 import NodeColumnValueWrapper from '../../components/Node/NodeColumnValueWrapper'
 import NodeColumnWrapper from '../../components/Node/NodeColumnWrapper'
-import {
-  useGetNodeData,
-  useNodeData,
-  useUpdateNodeData
-} from '../../providers/NodeDataProviders'
+import { useFlowStateContext } from '../../hooks/useFlowStateContext'
 import { traverseGraph } from '../../utils/traverseGraph'
 import type {
   ICollectionField,
@@ -79,10 +75,11 @@ function DeriveSchemaFromCollectionNode({ id }: { id: string }) {
   const { t } = useTranslation('core.apiBuilder')
   const nodes = useNodes()
   const edges = useEdges()
-  const getNodeData = useGetNodeData()
-  const updateNodeData = useUpdateNodeData()
-  const { collectionName, name, typescriptInterfaceName, fields } =
-    useNodeData<IDeriveSchemaFromCollectionNodeData>(id)
+  const { getNodeData, updateNodeData } = useFlowStateContext()
+  const { collectionName, name, typescriptInterfaceName, fields } = useMemo(
+    () => getNodeData<IDeriveSchemaFromCollectionNodeData>(id),
+    [getNodeData, id]
+  )
 
   const collectionInputNode = useMemo(
     () =>

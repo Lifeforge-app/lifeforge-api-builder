@@ -1,14 +1,12 @@
 import { Icon } from '@iconify/react/dist/iconify.js'
+import { useMemo } from 'react'
 
 import NodeColumn from '../../components/Node/NodeColumn'
 import NodeColumnWrapper from '../../components/Node/NodeColumnWrapper'
 import NodeListbox from '../../components/Node/NodeListbox'
 import NodeListboxOption from '../../components/Node/NodeListboxOption'
 import NodeTextInput from '../../components/Node/NodeTextInput'
-import {
-  useNodeData,
-  useUpdateNodeData
-} from '../../providers/NodeDataProviders'
+import { useFlowStateContext } from '../../hooks/useFlowStateContext'
 import type { IValueNodeData } from './types'
 
 const DATA_TYPES = [
@@ -31,8 +29,11 @@ const DATA_TYPES = [
 ]
 
 function ValueNode({ id }: { id: string }) {
-  const { dataType, value } = useNodeData<IValueNodeData>(id)
-  const updateNode = useUpdateNodeData()
+  const { getNodeData, updateNodeData } = useFlowStateContext()
+  const { dataType, value } = useMemo(
+    () => getNodeData<IValueNodeData>(id),
+    [getNodeData, id]
+  )
 
   return (
     <NodeColumnWrapper>
@@ -40,7 +41,9 @@ function ValueNode({ id }: { id: string }) {
         <NodeListbox
           value={dataType}
           setValue={newValue =>
-            updateNode(id, { dataType: newValue as IValueNodeData['dataType'] })
+            updateNodeData(id, {
+              dataType: newValue as IValueNodeData['dataType']
+            })
           }
           buttonContent={
             <span className="text-bg-500 flex items-center gap-2 font-medium">
@@ -72,7 +75,7 @@ function ValueNode({ id }: { id: string }) {
         }
         <NodeTextInput
           value={value}
-          setValue={newValue => updateNode(id, { value: newValue })}
+          setValue={newValue => updateNodeData(id, { value: newValue })}
           placeholder={
             dataType === 'string'
               ? 'Enter a string value'

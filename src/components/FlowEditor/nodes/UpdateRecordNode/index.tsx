@@ -4,14 +4,14 @@ import { useTranslation } from 'react-i18next'
 
 import NodeColumn from '../../components/Node/NodeColumn'
 import NodeColumnWrapper from '../../components/Node/NodeColumnWrapper'
-import { useGetNodeData } from '../../providers/NodeDataProviders'
+import { useFlowStateContext } from '../../hooks/useFlowStateContext'
 import { traverseGraph } from '../../utils/traverseGraph'
 import type { ICollectionNodeData } from '../CollectionNode/types'
 import FieldValueColumn from '../CreateRecordNode/components/FieldValueColumn'
 
 function UpdateRecordNode({ id }: { id: string }) {
   const { t } = useTranslation('core.apiBuilder')
-  const getNodeData = useGetNodeData()
+  const { getNodeData } = useFlowStateContext()
   const nodes = useNodes()
   const edges = useEdges()
 

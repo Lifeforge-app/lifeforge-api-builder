@@ -4,13 +4,13 @@ import { useMemo } from 'react'
 import NodeColumn from '../../components/Node/NodeColumn'
 import NodeColumnValueWrapper from '../../components/Node/NodeColumnValueWrapper'
 import NodeColumnWrapper from '../../components/Node/NodeColumnWrapper'
-import { useGetNodeData } from '../../providers/NodeDataProviders'
+import { useFlowStateContext } from '../../hooks/useFlowStateContext'
 import METHOD_COLORS from '../RouteNode/constants/method_colors'
 import type { IRouteNodeData } from '../RouteNode/types'
 
 function ControllerNode({ id }: { id: string }) {
   const connections = useNodeConnections()
-  const getNodeData = useGetNodeData()
+  const { getNodeData } = useFlowStateContext()
   const routeInputConnections = useMemo(
     () =>
       connections.filter(

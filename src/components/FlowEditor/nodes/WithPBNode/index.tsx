@@ -5,11 +5,7 @@ import { useTranslation } from 'react-i18next'
 import NodeColumn from '../../components/Node/NodeColumn'
 import NodeColumnWrapper from '../../components/Node/NodeColumnWrapper'
 import NodeTextInput from '../../components/Node/NodeTextInput'
-import {
-  useGetNodeData,
-  useNodeData,
-  useUpdateNodeData
-} from '../../providers/NodeDataProviders'
+import { useFlowStateContext } from '../../hooks/useFlowStateContext'
 import FieldsColumn from '../SchemaNode/components/FieldsColumn'
 import type { ISchemaField, ISchemaNodeData } from '../SchemaNode/types'
 
@@ -22,9 +18,11 @@ const PB_SCHEMA: ISchemaField[] = [
 ]
 
 function WithPBNode({ id }: { id: string }) {
-  const updateNode = useUpdateNodeData()
-  const { name, fields } = useNodeData<ISchemaNodeData>(id)
-  const getNodeData = useGetNodeData()
+  const { getNodeData, updateNodeData } = useFlowStateContext()
+  const { name, fields } = useMemo(
+    () => getNodeData<ISchemaNodeData>(id),
+    [getNodeData, id]
+  )
   const { t } = useTranslation('core.apiBuilder')
   const connections = useNodeConnections()
   const inputConnections = useMemo(
@@ -42,14 +40,14 @@ function WithPBNode({ id }: { id: string }) {
 
   useEffect(() => {
     if (!inputSchemaData) {
-      updateNode(id, { fields: [], name: '' })
+      updateNodeData(id, { fields: [], name: '' })
     } else {
-      updateNode(id, {
+      updateNodeData(id, {
         name: `${inputSchemaData.name || 'Schema'}`,
         fields: [...PB_SCHEMA, ...inputSchemaData.fields]
       })
     }
-  }, [inputSchemaData, id, updateNode])
+  }, [inputSchemaData, id, updateNodeData])
 
   return (
     <NodeColumnWrapper>

@@ -6,20 +6,18 @@ import NodeColumn from '../../components/Node/NodeColumn'
 import NodeColumnWrapper from '../../components/Node/NodeColumnWrapper'
 import NodeListbox from '../../components/Node/NodeListbox'
 import NodeListboxOption from '../../components/Node/NodeListboxOption'
-import {
-  useGetNodeData,
-  useNodeData,
-  useUpdateNodeData
-} from '../../providers/NodeDataProviders'
+import { useFlowStateContext } from '../../hooks/useFlowStateContext'
 import { traverseGraph } from '../../utils/traverseGraph'
 import type { ICollectionNodeData } from '../CollectionNode/types'
 import type { ICollectionPickFieldsNodeData } from './types'
 
 function CollectionPickFieldsNode({ id }: { id: string }) {
   const { t } = useTranslation('core.apiBuilder')
-  const getNodeData = useGetNodeData()
-  const { fieldIds, fields } = useNodeData<ICollectionPickFieldsNodeData>(id)
-  const updateNodeData = useUpdateNodeData()
+  const { getNodeData, updateNodeData } = useFlowStateContext()
+  const { fieldIds, fields } = useMemo(
+    () => getNodeData<ICollectionPickFieldsNodeData>(id),
+    [getNodeData, id]
+  )
   const allNodes = useNodes()
   const allEdges = useEdges()
 

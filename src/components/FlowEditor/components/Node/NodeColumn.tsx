@@ -4,8 +4,8 @@ import _ from 'lodash'
 import { useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import { useFlowStateContext } from '../../hooks/useFlowStateContext'
 import NODE_CONFIG, { type NODE_TYPES } from '../../nodes'
-import { useSetEdges } from '../../providers/NodeDataProviders'
 import type { IHandler } from '../../typescript/node'
 
 type NodeHandlers<T extends NODE_TYPES> = (typeof NODE_CONFIG)[T]['handlers']
@@ -48,7 +48,7 @@ function NodeColumn<T extends NODE_TYPES>({
   const { t } = useTranslation('core.apiBuilder')
   const nodeId = useNodeId()
   const connections = useNodeConnections()
-  const setEdges = useSetEdges()
+  const { setEdges } = useFlowStateContext()
   const dynamicId =
     'dynamicId' in props ? (props.dynamicId as string) : undefined
 

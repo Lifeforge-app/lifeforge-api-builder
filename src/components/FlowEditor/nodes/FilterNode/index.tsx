@@ -8,11 +8,7 @@ import NodeColumnValueWrapper from '../../components/Node/NodeColumnValueWrapper
 import NodeColumnWrapper from '../../components/Node/NodeColumnWrapper'
 import NodeListbox from '../../components/Node/NodeListbox'
 import NodeListboxOption from '../../components/Node/NodeListboxOption'
-import {
-  useGetNodeData,
-  useNodeData,
-  useUpdateNodeData
-} from '../../providers/NodeDataProviders'
+import { useFlowStateContext } from '../../hooks/useFlowStateContext'
 import { traverseGraph } from '../../utils/traverseGraph'
 import type { ICollectionNodeData } from '../CollectionNode/types'
 import FIELD_TYPES from '../SchemaNode/constants/field_types'
@@ -32,9 +28,11 @@ const OPERATIONS = [
 
 function FilterNode({ id }: { id: string }) {
   const { t } = useTranslation('core.apiBuilder')
-  const getNodeData = useGetNodeData()
-  const { columnName, comparator } = useNodeData<IFilterNodeData>(id)
-  const updateNode = useUpdateNodeData()
+  const { getNodeData, updateNodeData } = useFlowStateContext()
+  const { columnName, comparator } = useMemo(
+    () => getNodeData<IFilterNodeData>(id),
+    [getNodeData, id]
+  )
   const allNodes = useNodes()
   const allEdges = useEdges()
 
@@ -81,10 +79,10 @@ function FilterNode({ id }: { id: string }) {
 
   useEffect(() => {
     if (!targetCollection) {
-      updateNode(id, { columnName: '', comparator: '' })
+      updateNodeData(id, { columnName: '', comparator: '' })
       return
     }
-  }, [targetCollection, id, updateNode])
+  }, [targetCollection, id, updateNodeData])
 
   return (
     <NodeColumnWrapper>
@@ -93,7 +91,7 @@ function FilterNode({ id }: { id: string }) {
           <NodeColumn label="Field">
             <NodeListbox
               value={columnName}
-              setValue={value => updateNode(id, { columnName: value })}
+              setValue={value => updateNodeData(id, { columnName: value })}
             >
               {selectableColumns.map(field => (
                 <NodeListboxOption
@@ -109,7 +107,7 @@ function FilterNode({ id }: { id: string }) {
           <NodeColumn label="Comparator">
             <NodeListbox
               value={comparator}
-              setValue={value => updateNode(id, { comparator: value })}
+              setValue={value => updateNodeData(id, { comparator: value })}
               buttonContent={
                 <>
                   {OPERATIONS.find(op => op.value === comparator)?.label} (

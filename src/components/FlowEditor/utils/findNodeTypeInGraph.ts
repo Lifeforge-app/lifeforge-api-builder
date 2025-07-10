@@ -61,12 +61,6 @@ export function findNodeTypeInGraph(
         if (!useWayToController) {
           return true
         }
-        console.log(
-          fromHandler,
-          fromHandler?.isWayToController,
-          toHandler,
-          toHandler?.isWayToController
-        )
 
         return (
           (fromHandler?.isWayToController ?? false) &&

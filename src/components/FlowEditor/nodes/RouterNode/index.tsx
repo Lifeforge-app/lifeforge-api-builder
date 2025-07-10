@@ -1,15 +1,17 @@
+import { useMemo } from 'react'
+
 import NodeColumn from '../../components/Node/NodeColumn'
 import NodeColumnWrapper from '../../components/Node/NodeColumnWrapper'
 import NodeTextInput from '../../components/Node/NodeTextInput'
-import {
-  useNodeData,
-  useUpdateNodeData
-} from '../../providers/NodeDataProviders'
+import { useFlowStateContext } from '../../hooks/useFlowStateContext'
 import type { IRouterNodeData } from './types'
 
 function RouterNode({ id }: { id: string }) {
-  const { path } = useNodeData<IRouterNodeData>(id)
-  const updateNode = useUpdateNodeData()
+  const { getNodeData, updateNodeData } = useFlowStateContext()
+  const { path } = useMemo(
+    () => getNodeData<IRouterNodeData>(id),
+    [getNodeData, id]
+  )
 
   return (
     <NodeColumnWrapper>
@@ -18,7 +20,7 @@ function RouterNode({ id }: { id: string }) {
         <NodeTextInput
           value={path}
           setValue={(newValue: string) => {
-            updateNode(id, { path: newValue })
+            updateNodeData(id, { path: newValue })
           }}
           placeholder="/route/path"
         />

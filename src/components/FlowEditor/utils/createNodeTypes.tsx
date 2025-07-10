@@ -1,6 +1,7 @@
 import { type NodeProps } from '@xyflow/react'
 import React from 'react'
 
+import GroupNode from '../components/Node/GroupNode'
 import { default as NodeComponent } from '../components/Node/Node'
 import NODE_CONFIG, { type NODE_TYPES } from '../nodes'
 
@@ -19,6 +20,8 @@ export function createNodeTypes(): Record<
       </NodeComponent>
     )
   })
+
+  nodeTypes['group'] = GroupNode
 
   return nodeTypes
 }

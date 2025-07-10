@@ -1,21 +1,13 @@
 import { type Node } from '@xyflow/react'
 import { useEffect } from 'react'
 
-import type { FlowStateActions } from './useFlowState'
+import { useFlowStateContext } from './useFlowStateContext'
 
 const STORAGE_KEY = 'flowData'
 
-interface UseFlowPersistenceProps {
-  setNodes: FlowStateActions['setNodes']
-  setEdges: FlowStateActions['setEdges']
-  setNodeData: FlowStateActions['setNodeData']
-}
+export function useFlowPersistence() {
+  const { setNodes, setEdges, setNodeData, setReady } = useFlowStateContext()
 
-export function useFlowPersistence({
-  setNodes,
-  setEdges,
-  setNodeData
-}: UseFlowPersistenceProps) {
   useEffect(() => {
     const savedData = localStorage.getItem(STORAGE_KEY)
     if (savedData) {
@@ -29,10 +21,11 @@ export function useFlowPersistence({
           )
           setNodeData(flowData.nodeData || {})
           setEdges(flowData.edges)
+          setReady(true)
         }
       } catch (error) {
         console.error('Failed to parse saved flow data:', error)
       }
     }
-  }, [setNodes, setEdges, setNodeData])
+  }, [setNodes, setEdges, setNodeData, setReady])
 }

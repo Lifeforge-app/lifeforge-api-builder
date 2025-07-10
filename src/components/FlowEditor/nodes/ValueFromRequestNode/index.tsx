@@ -7,11 +7,7 @@ import NodeColumn from '../../components/Node/NodeColumn'
 import NodeColumnWrapper from '../../components/Node/NodeColumnWrapper'
 import NodeListbox from '../../components/Node/NodeListbox'
 import NodeListboxOption from '../../components/Node/NodeListboxOption'
-import {
-  useGetNodeData,
-  useNodeData,
-  useUpdateNodeData
-} from '../../providers/NodeDataProviders'
+import { useFlowStateContext } from '../../hooks/useFlowStateContext'
 import { findNodeTypeInGraph } from '../../utils/findNodeTypeInGraph'
 import { traverseGraph } from '../../utils/traverseGraph'
 import FieldColumn from '../SchemaNode/components/FieldColumn'
@@ -24,9 +20,12 @@ function ValueFromRequest({ id }: { id: string }) {
   const { t } = useTranslation('core.apiBuilder')
   const nodes = useNodes()
   const edges = useEdges()
-  const { requestType, field } = useNodeData<IValueFromRequestNodeData>(id)
-  const updateNodeData = useUpdateNodeData()
-  const getNodeData = useGetNodeData()
+  const { getNodeData, updateNodeData } = useFlowStateContext()
+
+  const { requestType, field } = useMemo(
+    () => getNodeData<IValueFromRequestNodeData>(id),
+    [getNodeData, id]
+  )
   const requestSchemaNode = useMemo(() => {
     const controller = findNodeTypeInGraph(nodes, edges, id, 'controller', true)
     if (!controller) return null
