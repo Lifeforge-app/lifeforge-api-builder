@@ -9,7 +9,7 @@ import {
   getNodeBounds
 } from '../../../utils/getNodeBounds'
 
-const MARGIN = 60
+const MARGIN = 100
 
 function downloadImage(dataUrl: string) {
   const a = document.createElement('a')

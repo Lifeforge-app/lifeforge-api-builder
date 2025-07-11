@@ -1,5 +1,5 @@
 import { Icon } from '@iconify/react/dist/iconify.js'
-import { NodeResizer, useNodes } from '@xyflow/react'
+import { NodeResizer } from '@xyflow/react'
 import clsx from 'clsx'
 import { useCallback, useMemo } from 'react'
 
@@ -42,7 +42,7 @@ function GroupNode({ selected, id }: { selected: boolean; id: string }) {
           !selected ? 'border-bg-500' : 'border-bg-900 dark:border-bg-100'
         )}
       >
-        <div className="text-bg-900 flex-between bg-bg-500 absolute -top-3 left-4 max-w-[calc(100%-2rem)] -translate-y-full gap-4 rounded-t-2xl p-2 pl-4">
+        <div className="text-bg-100 dark:text-bg-900 flex-between bg-bg-500 absolute -top-3 left-4 max-w-[calc(100%-2rem)] -translate-y-full gap-4 rounded-t-2xl p-2 pl-4">
           <div className="flex w-full min-w-0 items-center gap-3">
             <Icon icon={icon || 'tabler:box'} className="size-8 shrink-0" />
             <span className="w-full min-w-0 truncate text-2xl font-medium">
@@ -53,7 +53,7 @@ function GroupNode({ selected, id }: { selected: boolean; id: string }) {
             onClick={handleOpenConfig}
             icon="tabler:settings"
             variant="plain"
-            iconClassName="size-8 text-bg-700"
+            iconClassName="size-8 text-bg-300 dark:text-bg-700"
           />
         </div>
       </div>
