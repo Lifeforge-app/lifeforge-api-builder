@@ -41,7 +41,10 @@ function ControllerNode({ id }: { id: string }) {
                 {routeInputSchemaData.method.toUpperCase()}{' '}
               </span>
               <span className="w-full min-w-0 truncate">
-                {routeInputSchemaData.path}
+                {routeInputSchemaData.parentPath}
+                {routeInputSchemaData.path.startsWith('/')
+                  ? routeInputSchemaData.path
+                  : `/${routeInputSchemaData.path}`}
               </span>
             </div>
           </NodeColumnValueWrapper>

@@ -1,25 +1,33 @@
-import { addEdge, applyEdgeChanges, applyNodeChanges } from '@xyflow/react'
+import {
+  addEdge,
+  applyEdgeChanges,
+  applyNodeChanges,
+  useReactFlow
+} from '@xyflow/react'
 import type {
   Connection,
   Edge,
   EdgeChange,
   Node,
-  NodeChange
+  NodeChange,
+  OnNodeDrag
 } from '@xyflow/react'
-import { useCallback, useState } from 'react'
+import { type MouseEvent, useCallback, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 
 import NODE_CONFIG, { type NODE_TYPES } from '../nodes'
+import { getAbsolutePosition, getNodeBounds } from '../utils/getNodeBounds'
 
 export interface FlowState {
   nodes: Node[]
   edges: Edge[]
   nodeData: Record<string, any>
-  ready: boolean
 }
 
 export interface FlowStateActions {
   onNodesChange: (changes: NodeChange[]) => void
+  onNodeDrag: OnNodeDrag<Node>
+  onNodeDragStop: OnNodeDrag<Node>
   onEdgesChange: (changes: EdgeChange[]) => void
   onConnect: (params: Connection) => void
   onAddNode: (
@@ -35,18 +43,113 @@ export interface FlowStateActions {
   setNodes: React.Dispatch<React.SetStateAction<Node[]>>
   setEdges: React.Dispatch<React.SetStateAction<Edge[]>>
   setNodeData: React.Dispatch<React.SetStateAction<Record<string, any>>>
-  setReady: (ready: boolean) => void
 }
 
 export function useFlowState(): FlowState & FlowStateActions {
   const [nodes, setNodes] = useState<Node[]>([])
   const [edges, setEdges] = useState<Edge[]>([])
   const [nodeData, setNodeData] = useState<Record<string, any>>({})
-  const [ready, setReady] = useState(false)
+  const { getIntersectingNodes } = useReactFlow()
 
   const onNodesChange = useCallback(
     (changes: NodeChange[]) => setNodes(nds => applyNodeChanges(changes, nds)),
     []
+  )
+
+  const onNodeDrag = useCallback(
+    (_event: MouseEvent, node: Node) => {
+      const intersectingNodes = getIntersectingNodes(node)
+      if (node.type === 'group') {
+        setNodes(nds =>
+          nds.map(n => ({
+            ...n,
+            className: n.id === node.id ? '' : n.className
+          }))
+        )
+        return
+      }
+
+      const groupIntersected = intersectingNodes.find(
+        n => n.type === 'group' && !node.parentId
+      )
+
+      setNodes(nds =>
+        nds.map(n => {
+          if (n.id === groupIntersected?.id) {
+            return {
+              ...n,
+              className: 'group-highlight'
+            }
+          }
+
+          return {
+            ...n,
+            className: ''
+          }
+        })
+      )
+    },
+    [getIntersectingNodes]
+  )
+
+  const onNodeDragStop = useCallback(
+    (_event: MouseEvent, node: Node) => {
+      const intersectingNodes = getIntersectingNodes(node)
+      if (node.type === 'group' || node.parentId) {
+        return
+      }
+
+      const groupIntersected = intersectingNodes.find(
+        n => n.type === 'group' && node.parentId !== n.id
+      )
+
+      if (groupIntersected) {
+        const groupChildren = [
+          ...nodes
+            .filter(n => n.parentId === groupIntersected.id)
+            .map(n => ({
+              ...n,
+              position: getAbsolutePosition(nodes, n)
+            })),
+          node
+        ]
+
+        const { x, y, width, height } = getNodeBounds(groupChildren)
+
+        setNodes(nds =>
+          nds.map(n => {
+            if (n.id === node.id) {
+              return {
+                ...n,
+                position: {
+                  x: n.position.x - groupIntersected.position.x,
+                  y: n.position.y - groupIntersected.position.y
+                },
+                parentId: groupIntersected.id,
+                extent: 'parent'
+              }
+            }
+
+            if (n.id === groupIntersected.id) {
+              return {
+                ...n,
+                position: {
+                  x: Math.round(x / 20) * 20,
+                  y: Math.round(y / 20) * 20
+                },
+                width: Math.round(width / 20) * 20,
+                height: Math.round(height / 20) * 20,
+                className: ''
+              }
+            }
+
+            return n
+          })
+        )
+        return
+      }
+    },
+    [getIntersectingNodes, nodes]
   )
 
   const onEdgesChange = useCallback(
@@ -78,10 +181,7 @@ export function useFlowState(): FlowState & FlowStateActions {
         return newNode.id
       }
 
-      let data: Record<string, any> = {}
-      if ('data' in NODE_CONFIG[type]) {
-        data = NODE_CONFIG[type].data || {}
-      }
+      const data = 'data' in NODE_CONFIG[type] ? NODE_CONFIG[type].data : {}
 
       const newNode = {
         id: uuidv4(),
@@ -139,8 +239,9 @@ export function useFlowState(): FlowState & FlowStateActions {
     nodes,
     edges,
     nodeData,
-    ready,
     onNodesChange,
+    onNodeDrag,
+    onNodeDragStop,
     onEdgesChange,
     onConnect,
     onAddNode,
@@ -148,7 +249,6 @@ export function useFlowState(): FlowState & FlowStateActions {
     updateNodeData,
     setNodes,
     setEdges,
-    setNodeData,
-    setReady
+    setNodeData
   }
 }

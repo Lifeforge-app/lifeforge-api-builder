@@ -10,6 +10,7 @@ export default defineNodeConfig<IRouteNodeData>()({
   component: RouteNode,
   color: colors.orange[500],
   data: {
+    parentPath: '',
     method: 'GET',
     path: ''
   },

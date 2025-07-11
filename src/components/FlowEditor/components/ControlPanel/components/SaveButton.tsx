@@ -3,11 +3,10 @@ import { toast } from 'react-toastify'
 
 import { Button } from '@lifeforge/ui'
 
-interface SaveButtonProps {
-  nodeData: Record<string, unknown>
-}
+import { useFlowStateContext } from '../../../hooks/useFlowStateContext'
 
-export function SaveButton({ nodeData }: SaveButtonProps) {
+export function SaveButton() {
+  const { nodeData } = useFlowStateContext()
   const { toObject } = useReactFlow()
 
   const handleSave = () => {
@@ -18,11 +17,7 @@ export function SaveButton({ nodeData }: SaveButtonProps) {
   }
 
   return (
-    <Button
-      icon="uil:save"
-      className="absolute top-4 right-4 z-10"
-      onClick={handleSave}
-    >
+    <Button icon="uil:save" onClick={handleSave}>
       Save Flow
     </Button>
   )

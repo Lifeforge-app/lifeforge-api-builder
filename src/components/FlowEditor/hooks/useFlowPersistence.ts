@@ -6,7 +6,7 @@ import { useFlowStateContext } from './useFlowStateContext'
 const STORAGE_KEY = 'flowData'
 
 export function useFlowPersistence() {
-  const { setNodes, setEdges, setNodeData, setReady } = useFlowStateContext()
+  const { setNodes, setEdges, setNodeData } = useFlowStateContext()
 
   useEffect(() => {
     const savedData = localStorage.getItem(STORAGE_KEY)
@@ -15,17 +15,22 @@ export function useFlowPersistence() {
         const flowData = JSON.parse(savedData)
         if (flowData.nodes && flowData.edges) {
           setNodes(
-            flowData.nodes.map((node: Node) => ({
-              ...node
-            }))
+            flowData.nodes
+              .map((node: Node) => ({
+                ...node
+              }))
+              .sort((a: Node, b: Node) => {
+                if (a.type === 'group' && b.type !== 'group') return -1
+                if (b.type === 'group' && a.type !== 'group') return 1
+                return a.id.localeCompare(b.id)
+              })
           )
           setNodeData(flowData.nodeData || {})
           setEdges(flowData.edges)
-          setReady(true)
         }
       } catch (error) {
         console.error('Failed to parse saved flow data:', error)
       }
     }
-  }, [setNodes, setEdges, setNodeData, setReady])
+  }, [setNodes, setEdges, setNodeData])
 }

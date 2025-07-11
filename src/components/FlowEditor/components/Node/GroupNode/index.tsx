@@ -1,13 +1,16 @@
 import { Icon } from '@iconify/react/dist/iconify.js'
+import { NodeResizer, useNodes } from '@xyflow/react'
 import clsx from 'clsx'
 import { useCallback, useMemo } from 'react'
 
 import { Button, useModalStore } from '@lifeforge/ui'
 
+import usePersonalization from '../../../../../providers/PersonalizationProvider/usePersonalization'
 import { useFlowStateContext } from '../../../hooks/useFlowStateContext'
 import GroupNodeConfigModal from './components/GroupNodeConfigModal'
 
 function GroupNode({ selected, id }: { selected: boolean; id: string }) {
+  const { derivedThemeColor } = usePersonalization()
   const open = useModalStore(s => s.open)
   const { getNodeData } = useFlowStateContext()
   const { name, icon } = useMemo(
@@ -22,27 +25,39 @@ function GroupNode({ selected, id }: { selected: boolean; id: string }) {
   }, [open, id])
 
   return (
-    <div
-      className={clsx(
-        'relative h-full overflow-hidden rounded-3xl border-2 transition-colors',
-        !selected ? 'border-bg-500' : 'border-bg-900 dark:border-bg-100'
-      )}
-    >
-      <div className="text-bg-500 flex-between absolute top-0 left-0 w-full gap-4 p-4">
-        <div className="flex items-center gap-3">
-          <Icon icon={icon ?? 'tabler:box'} className="size-8" />
-          <span className="text-3xl font-medium">
-            {name ?? 'Untitled Group'}
-          </span>
+    <>
+      <NodeResizer
+        color={derivedThemeColor}
+        isVisible={selected}
+        minWidth={100}
+        minHeight={30}
+        lineStyle={{
+          borderWidth: '1px'
+        }}
+        handleClassName="size-2.5!"
+      />
+      <div
+        className={clsx(
+          'relative h-full transition-colors',
+          !selected ? 'border-bg-500' : 'border-bg-900 dark:border-bg-100'
+        )}
+      >
+        <div className="text-bg-900 flex-between bg-bg-500 absolute -top-3 left-4 max-w-[calc(100%-2rem)] -translate-y-full gap-4 rounded-t-2xl p-2 pl-4">
+          <div className="flex w-full min-w-0 items-center gap-3">
+            <Icon icon={icon || 'tabler:box'} className="size-8 shrink-0" />
+            <span className="w-full min-w-0 truncate text-2xl font-medium">
+              {name || 'Untitled Group'}
+            </span>
+          </div>
+          <Button
+            onClick={handleOpenConfig}
+            icon="tabler:settings"
+            variant="plain"
+            iconClassName="size-8 text-bg-700"
+          />
         </div>
-        <Button
-          onClick={handleOpenConfig}
-          icon="tabler:settings"
-          variant="plain"
-          iconClassName="size-8"
-        />
       </div>
-    </div>
+    </>
   )
 }
 

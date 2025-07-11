@@ -7,13 +7,15 @@ import { useModalStore } from '@lifeforge/ui'
 
 import GroupNodeConfigModal from '../components/Node/GroupNode/components/GroupNodeConfigModal'
 import NodeSelector from '../components/Node/NodeSelector'
-import { type NODE_TYPES } from '../nodes'
+import NODE_CONFIG, { type NODE_TYPES } from '../nodes'
+import { getAbsolutePosition, getNodeBounds } from '../utils/getNodeBounds'
 import { useFlowStateContext } from './useFlowStateContext'
 
-const GROUP_MARGIN = 40
+const MARGIN = 40
 
 export function useFlowKeyboardHandlers() {
-  const { onAddNode, setNodes, updateNodeData } = useFlowStateContext()
+  const { onAddNode, setNodes, updateNodeData, setNodeData } =
+    useFlowStateContext()
   const nodes = useNodes()
   const { screenToFlowPosition } = useReactFlow()
   const open = useModalStore(s => s.open)
@@ -38,57 +40,35 @@ export function useFlowKeyboardHandlers() {
   }, [screenToFlowPosition, open, onAddNode, stack])
 
   const groupSelectedNodes = useCallback(() => {
-    const selectedNodes = nodes.filter(node => node.selected)
+    const selectedNodes = nodes.filter(node => node.selected && !node.parentId)
 
     if (selectedNodes.length === 0) {
+      toast.error('No nodes selected to group.')
       return
     }
 
-    if (selectedNodes.some(node => node.extent)) {
-      toast.error(
-        'Cannot group nodes that are already part of a group or have an extent.'
-      )
+    if (selectedNodes.some(node => node.type === 'group')) {
+      toast.error('You can only group nodes that are not a group themselves.')
       return
     }
 
-    const minX = Math.min(...selectedNodes.map(node => node.position.x))
-    const minY = Math.min(...selectedNodes.map(node => node.position.y))
-    const maxX = Math.max(
-      ...selectedNodes.map(
-        node =>
-          node.position.x +
-          (() => {
-            const element = document.querySelector(`[data-id="${node.id}"]`)
-            return element ? element.clientWidth : 0
-          })()
-      )
-    )
-    const maxY = Math.max(
-      ...selectedNodes.map(
-        node =>
-          node.position.y +
-          (() => {
-            const element = document.querySelector(`[data-id="${node.id}"]`)
-            return element ? element.clientHeight : 0
-          })()
-      )
-    )
+    const { x, y, width, height } = getNodeBounds(selectedNodes)
 
     const groupNode: Node = {
       id: `group-${uuidv4()}`,
       type: 'group',
       position: {
-        x: Math.round((minX - GROUP_MARGIN) / 20) * 20,
-        y: Math.round((minY - GROUP_MARGIN) / 20) * 20 - 60
+        x: Math.round((x - MARGIN) / 20) * 20,
+        y: Math.round((y - MARGIN) / 20) * 20
       },
       data: {},
-      width: Math.round((maxX - minX + GROUP_MARGIN * 2) / 20) * 20,
-      height: Math.round((maxY - minY + GROUP_MARGIN * 2) / 20) * 20 + 60
+      width: Math.round((width + MARGIN * 2) / 20) * 20,
+      height: Math.round((height + MARGIN * 2) / 20) * 20
     }
 
     setNodes(nds => [
-      ...nds.filter(node => !node.selected),
       groupNode,
+      ...nds.filter(node => !node.selected),
       ...selectedNodes.map(node => ({
         ...node,
         selected: false,
@@ -143,6 +123,185 @@ export function useFlowKeyboardHandlers() {
     )
   }, [nodes, setNodes])
 
+  const duplicateSelectedNodes = useCallback(() => {
+    const selectedNodes = nodes.filter(node => node.selected)
+    if (selectedNodes.length === 0) {
+      toast.error('No nodes selected to duplicate.')
+      return
+    }
+
+    if (selectedNodes.length > 1) {
+      toast.error('Cannot duplicate multiple nodes at once.')
+      return
+    }
+
+    const selectedNode = selectedNodes[0]
+
+    if (selectedNode.type === 'group') {
+      toast.error('Cannot duplicate grouped nodes.')
+      return
+    }
+
+    const type = selectedNode.type as NODE_TYPES
+
+    const data = 'data' in NODE_CONFIG[type] ? NODE_CONFIG[type].data : {}
+
+    const element = document.querySelector(
+      `[data-id="${selectedNode.id}"] > div`
+    )
+    if (!element) {
+      toast.error('Selected node not found in the DOM.')
+      return
+    }
+
+    const nodeHeight = element.clientHeight
+
+    const newNode = {
+      id: uuidv4(),
+      type,
+      position: {
+        x: selectedNode.position.x,
+        y: Math.round((selectedNode.position.y + nodeHeight + 40) / 20) * 20
+      },
+      data: {}
+    }
+
+    setNodes(nds => nds.concat(newNode))
+    setNodeData(prevData => ({
+      ...prevData,
+      [newNode.id]: data
+    }))
+
+    toast.success(`Node "${NODE_CONFIG[type].name}" duplicated successfully.`)
+  }, [nodes, setNodes, setNodeData])
+
+  const resizeGroupNode = useCallback(() => {
+    const selectedNodes = nodes.filter(
+      node => node.selected && node.type === 'group'
+    )
+    if (!selectedNodes.length) {
+      return
+    }
+
+    for (const node of selectedNodes) {
+      const children = nodes
+        .filter(child => child.parentId === node.id)
+        .map(child => ({
+          ...child,
+          position: getAbsolutePosition(nodes, child)
+        }))
+
+      if (children.length === 0) {
+        continue
+      }
+
+      const { x, y, width, height } = getNodeBounds(children)
+
+      const deltaX = x - node.position.x
+      const deltaY = y - node.position.y
+
+      setNodes(nds =>
+        nds.map(n => {
+          if (n.id === node.id) {
+            return {
+              ...n,
+              position: {
+                x: Math.round((x - MARGIN) / 20) * 20,
+                y: Math.round((y - MARGIN) / 20) * 20
+              },
+              width: Math.round((width + MARGIN * 2) / 20) * 20,
+              height: Math.round((height + MARGIN * 2) / 20) * 20
+            }
+          }
+
+          if (children.some(child => child.id === n.id)) {
+            return {
+              ...n,
+              position: {
+                x: n.position.x - deltaX + MARGIN,
+                y: n.position.y - deltaY + MARGIN
+              }
+            }
+          }
+          return n
+        })
+      )
+    }
+  }, [nodes, setNodes])
+
+  const removeFromGroup = useCallback(() => {
+    const selectedNodes = nodes.filter(node => node.selected && node.parentId)
+
+    if (selectedNodes.length === 0) {
+      return
+    }
+
+    if (selectedNodes.length > 1) {
+      toast.error('Cannot remove multiple nodes from a group at once.')
+      return
+    }
+
+    const targetNode = selectedNodes[0]
+
+    const parentNode = nodes.find(n => n.id === targetNode.parentId)
+
+    if (!parentNode) {
+      return
+    }
+
+    const newChildren = nodes
+      .filter(n => n.parentId === parentNode.id && n.id !== targetNode.id)
+      .map(n => ({
+        ...n,
+        position: getAbsolutePosition(nodes, n)
+      }))
+
+    const { x, y, width, height } = getNodeBounds(newChildren)
+    const deltaX = x - parentNode.position.x
+    const deltaY = y - parentNode.position.y
+
+    setNodes(nds =>
+      nds.map(node => {
+        if (node.id === targetNode.id) {
+          return {
+            ...node,
+            selected: false,
+            position: {
+              x: Math.round((x + width + MARGIN + 20) / 20) * 20,
+              y: Math.round((y + height + MARGIN + 20) / 20) * 20
+            },
+            extent: undefined,
+            parentId: undefined
+          }
+        }
+
+        if (node.id === targetNode.parentId) {
+          return {
+            ...node,
+            position: {
+              x: Math.round((x - MARGIN) / 20) * 20,
+              y: Math.round((y - MARGIN) / 20) * 20
+            },
+            width: Math.round((width + MARGIN * 2) / 20) * 20,
+            height: Math.round((height + MARGIN * 2) / 20) * 20
+          }
+        }
+
+        if (newChildren.some(child => child.id === node.id)) {
+          return {
+            ...node,
+            position: {
+              x: node.position.x - deltaX + MARGIN,
+              y: node.position.y - deltaY + MARGIN
+            }
+          }
+        }
+
+        return node
+      })
+    )
+  }, [nodes, setNodes])
+
   const isInputFocused = useCallback(() => {
     return (
       document.activeElement &&
@@ -168,8 +327,28 @@ export function useFlowKeyboardHandlers() {
         }
         groupSelectedNodes()
       }
+
+      if (event.key.toLowerCase() === 'd') {
+        duplicateSelectedNodes()
+      }
+
+      if (event.key.toLowerCase() === 'r') {
+        resizeGroupNode()
+      }
+
+      if (event.key.toLowerCase() === 'x') {
+        removeFromGroup()
+      }
     },
-    [isInputFocused, openNodeSelector, groupSelectedNodes, ungroupNodes]
+    [
+      isInputFocused,
+      openNodeSelector,
+      groupSelectedNodes,
+      ungroupNodes,
+      duplicateSelectedNodes,
+      resizeGroupNode,
+      removeFromGroup
+    ]
   )
 
   const handleMouseMove = useCallback((event: MouseEvent) => {

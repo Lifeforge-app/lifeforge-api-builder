@@ -16,6 +16,7 @@
     "@tailwindcss/vite": "^4.1.11",
     "@xyflow/react": "^12.8.1",
     "clsx": "^2.1.1",
+    "html-to-image": "^1.11.13",
     "i18next": "24.2.2",
     "javascript-color-gradient": "^2.5.0",
     "lodash": "^4.17.21",

@@ -1,5 +1,6 @@
 import { Icon } from '@iconify/react/dist/iconify.js'
 import { useEdges, useNodes } from '@xyflow/react'
+import _ from 'lodash'
 import { useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -95,7 +96,9 @@ function ValueFromRequest({ id }: { id: string }) {
                   field={field}
                   withWrapper={false}
                   rightComponent={
-                    <span className="text-bg-500 text-sm">({requestType})</span>
+                    <span className="text-bg-500 text-sm">
+                      ({t(`nodeColumns.${_.camelCase(requestType)}`)})
+                    </span>
                   }
                 />
               )
@@ -122,7 +125,9 @@ function ValueFromRequest({ id }: { id: string }) {
                     />
                     {option.field.name}
                   </span>
-                  <span className="text-bg-500 text-sm">({option.from})</span>
+                  <span className="text-bg-500 text-sm">
+                    ({t(`nodeColumns.${_.camelCase(option.from)}`)})
+                  </span>
                 </span>
               </NodeListboxOption>
             ))}

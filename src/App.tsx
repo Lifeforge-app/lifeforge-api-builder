@@ -104,7 +104,7 @@ function App() {
         <ToastProvider>
           <main
             id="app"
-            className="bg-bg-200/50 text-bg-800 dark:bg-bg-900/50 dark:text-bg-50 flex min-h-dvh w-full flex-col"
+            className="bg-bg-200/50 text-bg-800 dark:bg-bg-950 dark:text-bg-50 flex min-h-dvh w-full flex-col"
           >
             <Suspense fallback={<LoadingScreen />}>
               {isAuthed ? (

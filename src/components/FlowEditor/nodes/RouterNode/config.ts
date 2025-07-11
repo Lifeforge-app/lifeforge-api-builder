@@ -10,6 +10,7 @@ export default defineNodeConfig<IRouterNodeData>()({
   component: RouterNode,
   color: colors.orange[500],
   data: {
+    parentPath: '',
     path: ''
   },
   handlers: {
