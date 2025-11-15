@@ -1,4 +1,4 @@
-# ⚠️ Migrated ⚠️ 
+# ⚠️ Deprecated ⚠️ 
 
-This project has moved to: [https://github.com/Lifeforge-app/lifeforge](https://github.com/Lifeforge-app/lifeforge)  
-This repository is no longer maintained. Please visit the new repository for the latest code and documentation.
+This project has been deprecated since it no longer adheres to the design philosophy of the main codebase.
+This repository is no longer maintained. Please visit the [main repository](https://github.com/lifeforge-app/lifeforge) for the latest code and documentation.
